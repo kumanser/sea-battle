@@ -18,17 +18,21 @@ public:
 		}
 	}
 	void Print(){
-		cout << MAP_ELEMENT_SPACE << MAP_ELEMENT_SPACE;
+		cout << MAP_ELEMENT_SPACE << MAP_ELEMENT_SPACE << MAP_ELEMENT_SPACE;
 		for(int i=0;i<MAP_WIDTH;i++){
 			cout<< (char)('A'+i)<< MAP_ELEMENT_SPACE;
 		}
 		cout<<endl;
-		for(int i=0; i<MAP_HEIGHT; i++){
-			cout << 1 + i << MAP_ELEMENT_SPACE;
+		for(int i=0; i<MAP_HEIGHT-1; i++){
+			cout << 1 + i << MAP_ELEMENT_SPACE << MAP_ELEMENT_SPACE;
 			for(int j=0; j<MAP_WIDTH; j++){
 				cout<<Matrix[i][j]<<MAP_ELEMENT_SPACE;
 			}
 			cout<<endl;
+		}
+		cout << 10 << MAP_ELEMENT_SPACE;
+		for(int i=0; i<MAP_WIDTH; i++){
+			cout<<Matrix[i][0]<<MAP_ELEMENT_SPACE;
 		}
 		cout << endl;
 	}
