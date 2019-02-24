@@ -6,6 +6,14 @@ const char MAP_HEIGHT = MAP_WIDTH;
 const char MAP_ELEMENT_EMPTY = '.';
 const char MAP_ELEMENT_SPACE = ' ';
 const char MAP_ELEMENT_DAMAGED='X';
+int NumCount(int num){
+	int cnt=0;
+	while(num != 0){
+		num/=10;
+		cnt++;
+	}
+	return cnt;
+}
 
 class Map {
 	char Matrix[MAP_HEIGHT][MAP_WIDTH];
@@ -18,21 +26,25 @@ public:
 		}
 	}
 	void Print(){
-		cout << MAP_ELEMENT_SPACE << MAP_ELEMENT_SPACE << MAP_ELEMENT_SPACE;
+		int max_num_length = NumCount(MAP_HEIGHT);
+		for (int i = 0; i < max_num_length; i++) {
+			cout << MAP_ELEMENT_SPACE;
+		}
+		cout << MAP_ELEMENT_SPACE;
 		for(int i=0;i<MAP_WIDTH;i++){
 			cout<< (char)('A'+i)<< MAP_ELEMENT_SPACE;
 		}
 		cout<<endl;
-		for(int i=0; i<MAP_HEIGHT-1; i++){
-			cout << 1 + i << MAP_ELEMENT_SPACE << MAP_ELEMENT_SPACE;
+		for(int i=0; i<MAP_HEIGHT; i++){
+			int current_num_length = NumCount(i+1);
+			cout << 1 + i << MAP_ELEMENT_SPACE;
+			for(int j=0; j<max_num_length-current_num_length; j++){
+				cout<<MAP_ELEMENT_SPACE;
+			} 
 			for(int j=0; j<MAP_WIDTH; j++){
 				cout<<Matrix[i][j]<<MAP_ELEMENT_SPACE;
 			}
 			cout<<endl;
-		}
-		cout << 10 << MAP_ELEMENT_SPACE;
-		for(int i=0; i<MAP_WIDTH; i++){
-			cout<<Matrix[i][0]<<MAP_ELEMENT_SPACE;
 		}
 		cout << endl;
 	}
