@@ -4,9 +4,12 @@ using namespace std;
 int main()
 {	
 	Map map;
-	map.Print();
-	map.Shoot(1, 2);
-	map.Shoot(5, 9);
-	map.Print();
+	map.Shoot(0, 0);
+	map.Shoot(0, 1);
+	//map.Shoot(1, 1);
+	cout << "For Me" << endl;
+	map.PrintForMe();
+	cout << "For Enemy" << endl;
+	map.PrintForEnemy();
 	return 0;
 }
