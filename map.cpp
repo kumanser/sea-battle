@@ -1,4 +1,5 @@
 #include <iostream>
+#include "environment.h"
 #include "map.h"
 #include "geometry.h"
 
@@ -22,8 +23,8 @@ Ship::Ship(Map *battlefield, int length){
 bool Ship::Init(Position pos, Orientation orient){
 	Pos=pos;
 	Orient=orient;
-	IsInit = true;
-	return Battlefield->DrawShip(this);
+	IsInit = Battlefield->DrawShip(this);
+	return IsInit;
 }
 
 Position Ship::GetPosition() {
@@ -35,11 +36,47 @@ Orientation Ship::GetOrientation() {
 int Ship::GetLength() {
 	return Length;
 }
+int Ship::GetDamage(){
+	return Damage;
+}
+bool Ship::IsDead(){
+	return Damage >= Length;
+}
+void Ship::DrawCircuit() {
+	Position pos_begin(GetPosition().X - 1, GetPosition().Y - 1);
+	Position pos_end;
+	if (GetOrientation()==Orientation::VERTICAL){
+		pos_end.X=pos_begin.X+2;
+		pos_end.Y=pos_begin.Y + GetLength() + 1;
+	} else {
+		pos_end.X=pos_begin.X + GetLength() + 1;
+		pos_end.Y=pos_begin.Y+2;
+	}
 
+	for(int i=pos_begin.X; i <= pos_end.X; i++){
+		for(int j=pos_begin.Y; j <= pos_end.Y; j++){
+			Position current_pos(i, j);
+			if (!Battlefield->IsPosCorrect(current_pos)) {
+				continue;
+			}
+			if (Battlefield->Matrix[current_pos.X][current_pos.Y].Sign==MAP_ELEMENT_EMPTY) {
+				Battlefield->Matrix[current_pos.X][current_pos.Y].Sign=MAP_ELEMENT_SLIP;
+			}
+		}
+	}
+}
+bool Ship::Harm(){
+	Damage++;
+	bool is_dead = IsDead();
+	if (is_dead) {
+		DrawCircuit();
+	}
+	return is_dead;
+}
 Map::Map(){
 	for(int i=0; i<MAP_HEIGHT; i++){
 		for(int j=0; j<MAP_WIDTH; j++){
-			Matrix[i][j]=MAP_ELEMENT_EMPTY;
+			Matrix[i][j].Sign=MAP_ELEMENT_EMPTY;
 		}
 	}
 	//Строчки ниже для тестирования. Потом удалить
@@ -50,12 +87,19 @@ Map::Map(){
 		int ships_count = SHIPS_MAX_LENGTH - current_length + 1;
 		for (int i = 0; i < ships_count; i++) {
 			Ship new_ship(this, current_length);
-			ShipsList.push_back(new_ship);
+			ShipsList[current_length - 1].push_back(new_ship);
 		}
 	}*/
-	Ship ship(this, 4);
-	ship.Init(Position(1, 1), Orientation::HORISONTAL);
+	//Ship ship(this, 4);
+	//ship.Init(Position(1, 1), Orientation::HORISONTAL);
 
+}
+Map::~Map() {
+	for (int current_length = 1; current_length <= SHIPS_MAX_LENGTH; current_length++) {
+		for (int i = 0; i < ShipsList[current_length - 1].size(); i++) {
+			delete [] ShipsList[current_length - 1][i];
+		}
+	}
 }
 void Map::PrintForEnemy(){
 	int max_num_length = NumCount(MAP_HEIGHT);
@@ -74,7 +118,7 @@ void Map::PrintForEnemy(){
 			cout<<MAP_ELEMENT_SPACE;
 		} 
 		for(int j=0; j<MAP_WIDTH; j++){
-			char current = Matrix[i][j];
+			char current = Matrix[i][j].Sign;
 			if (current==MAP_ELEMENT_UNHARMED){
 				current=MAP_ELEMENT_EMPTY;
 			}
@@ -101,20 +145,24 @@ void Map::PrintForMe(){
 			cout<<MAP_ELEMENT_SPACE;
 		} 
 		for(int j=0; j<MAP_WIDTH; j++){
-			cout<<Matrix[i][j]<<MAP_ELEMENT_SPACE;
+			cout<<Matrix[i][j].Sign<<MAP_ELEMENT_SPACE;
 		}
 		cout<<endl;
 	}
 	cout << endl;
 }
-void Map::Shoot(int x, int y){
-	if(Matrix[x][y]==MAP_ELEMENT_UNHARMED){
-		Matrix[x][y]=MAP_ELEMENT_DAMAGED;
-	} else if (Matrix[x][y]==MAP_ELEMENT_EMPTY) {
-		Matrix[x][y]=MAP_ELEMENT_SLIP;
+void Map::Shoot(Position pos){
+	if(Matrix[pos.X][pos.Y].Sign==MAP_ELEMENT_UNHARMED){
+		Matrix[pos.X][pos.Y].Sign=MAP_ELEMENT_DAMAGED;
+		Matrix[pos.X][pos.Y].Battleship->Harm();
+
+	} else if (Matrix[pos.X][pos.Y].Sign==MAP_ELEMENT_EMPTY) {
+		Matrix[pos.X][pos.Y].Sign=MAP_ELEMENT_SLIP;
 	}
+	//Добавить метод корабля об уменьшении его здоровья
 }
 bool Map::CheckPosition(Ship *ship){
+	//Проверка, умещаются ли корабли в поле
 	if (ship->GetOrientation()==Orientation::VERTICAL){
 		if (MAP_HEIGHT-ship->GetPosition().Y < ship->GetLength()){
 			return false;
@@ -124,6 +172,8 @@ bool Map::CheckPosition(Ship *ship){
 			return false;
 		}
 	}
+
+	//Проверка на соприкосновение с другими кораблями
 	Position pos_begin(ship->GetPosition().X - 1, ship->GetPosition().Y - 1);
 	Position pos_end;
 	if (ship->GetOrientation()==Orientation::VERTICAL){
@@ -140,7 +190,7 @@ bool Map::CheckPosition(Ship *ship){
 			if (!IsPosCorrect(current_pos)) {
 				continue;
 			}
-			if (Matrix[current_pos.X][current_pos.Y]==MAP_ELEMENT_UNHARMED) {
+			if (Matrix[current_pos.X][current_pos.Y].Sign==MAP_ELEMENT_UNHARMED) {
 				return false;
 			}
 		}
@@ -159,7 +209,8 @@ bool Map::DrawShip(Ship *ship){
 	}
 	Position current_pos=ship->GetPosition();
 	for(int i=0; i<ship->GetLength();i++){
-		Matrix[current_pos.X][current_pos.Y]=MAP_ELEMENT_UNHARMED;
+		Matrix[current_pos.X][current_pos.Y].Sign=MAP_ELEMENT_UNHARMED;
+		Matrix[current_pos.X][current_pos.Y].Battleship = ship;
 		if (ship->GetOrientation()==Orientation::VERTICAL){
 			current_pos.Y++;
 		} else {
@@ -167,4 +218,20 @@ bool Map::DrawShip(Ship *ship){
 		}
 	}
 	return true;
+}
+void Map::RandomFill(){
+	for (int current_length = 1; current_length <= SHIPS_MAX_LENGTH; current_length++) {
+		int ships_count = SHIPS_MAX_LENGTH - current_length + 1;
+		for (int i = 0; i < ships_count; i++) {
+			//Ship new_ship(this, current_length);
+			Ship *new_ship = new Ship(this, current_length);
+			Orientation tmp_orient;
+			Position tmp_pos;
+			do {
+				tmp_orient = GetRandomOrientation();
+				tmp_pos.SetRandom();
+			} while (!new_ship->Init(tmp_pos,tmp_orient));
+			ShipsList[current_length - 1].push_back(new_ship);
+		}
+	}
 }

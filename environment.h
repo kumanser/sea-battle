@@ -7,6 +7,7 @@ const char MAP_ELEMENT_EMPTY = '.';
 const char MAP_ELEMENT_SPACE = ' ';
 const char MAP_ELEMENT_DAMAGED='X';
 const char MAP_ELEMENT_SLIP='o';
-const char MAP_ELEMENT_UNHARMED='*';
+const char MAP_ELEMENT_UNHARMED='#';
+const int SHIPS_MAX_LENGTH = 4;
 
 #endif

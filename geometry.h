@@ -9,19 +9,21 @@ enum Orientation {
 	HORISONTAL
 };
 
+Orientation GetRandomOrientation();
+
 //Класс для хранения и обработки координат
 class Position {
 public:
-	size_t X;
-	size_t Y;
+	int X;
+	int Y;
 
 	Position(void);
-	Position(size_t x, size_t y);
+	Position(int x, int y);
 	~Position(void);
 
 	void Input(std::istream &is);
 	void Print(void);
-
+	void SetRandom(void);
 };
 
 
