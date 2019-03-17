@@ -46,6 +46,7 @@ public:
 	void PrintForMe();
 	void Shoot(Position pos);
 	bool DrawShip(Ship *ship);
+	bool AddShip(Position pos, Orientation orient, int length);
 	void RandomFill();
 	friend Ship;
 };

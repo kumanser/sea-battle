@@ -97,7 +97,7 @@ Map::Map(){
 Map::~Map() {
 	for (int current_length = 1; current_length <= SHIPS_MAX_LENGTH; current_length++) {
 		for (int i = 0; i < ShipsList[current_length - 1].size(); i++) {
-			delete [] ShipsList[current_length - 1][i];
+			delete ShipsList[current_length - 1][i];
 		}
 	}
 }
@@ -159,7 +159,6 @@ void Map::Shoot(Position pos){
 	} else if (Matrix[pos.X][pos.Y].Sign==MAP_ELEMENT_EMPTY) {
 		Matrix[pos.X][pos.Y].Sign=MAP_ELEMENT_SLIP;
 	}
-	//Добавить метод корабля об уменьшении его здоровья
 }
 bool Map::CheckPosition(Ship *ship){
 	//Проверка, умещаются ли корабли в поле
@@ -218,6 +217,16 @@ bool Map::DrawShip(Ship *ship){
 		}
 	}
 	return true;
+}
+bool Map::AddShip(Position pos, Orientation orient, int length) {
+	Ship *new_ship = new Ship(this, length);
+	bool is_init = new_ship->Init(pos,orient);
+	if (is_init){
+		ShipsList[length - 1].push_back(new_ship);
+	} else {
+		delete new_ship;
+	}
+	return is_init;
 }
 void Map::RandomFill(){
 	for (int current_length = 1; current_length <= SHIPS_MAX_LENGTH; current_length++) {
