@@ -26,5 +26,7 @@ public:
 	void SetRandom(void);
 };
 
+int ManhattanDistance(Position pos1, Position pos2);
+
 
 #endif /* GEOMETRY_H */

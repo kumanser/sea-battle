@@ -45,6 +45,7 @@ public:
 	void PrintForEnemy();
 	void PrintForMe();
 	void Shoot(Position pos);
+	void Shoot(Position pos, int radius);
 	bool DrawShip(Ship *ship);
 	bool AddShip(Position pos, Orientation orient, int length);
 	void RandomFill();

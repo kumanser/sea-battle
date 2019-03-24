@@ -40,3 +40,7 @@ void Position::SetRandom(void) {
 	X = rand() % MAP_WIDTH;
 	Y = rand() % MAP_HEIGHT;
 }
+
+int ManhattanDistance(Position pos1, Position pos2) {
+	return abs(pos2.X-pos1.X)+abs(pos2.Y-pos1.Y);
+}

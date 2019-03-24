@@ -160,6 +160,31 @@ void Map::Shoot(Position pos){
 		Matrix[pos.X][pos.Y].Sign=MAP_ELEMENT_SLIP;
 	}
 }
+void Map::Shoot(Position pos, int radius) {
+	//Shoot(pos);
+	int size = 2 * radius + 1;
+	Position origin;
+	origin.X = pos.X - radius;
+	origin.Y = pos.Y - radius; 
+	for(int i=0; i<size; i++){
+		int start;
+		int end;
+		if (i<size/2){
+			start = radius - i;
+			end = radius + i;
+		} else {
+			start = i - radius;
+			end = 3*radius - i;
+		}
+		for(int j=start; j<=end; j++){
+			Position curr_pos;
+			curr_pos.X = origin.X + i;
+			curr_pos.Y = origin.Y + j;
+			Shoot(curr_pos);
+			//A[i][j] = SYMBOL;
+		}
+	}
+}
 bool Map::CheckPosition(Ship *ship){
 	//Проверка, умещаются ли корабли в поле
 	if (ship->GetOrientation()==Orientation::VERTICAL){
