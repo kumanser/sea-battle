@@ -152,20 +152,24 @@ void Map::PrintForMe(){
 	cout << endl;
 }
 void Map::Shoot(Position pos){
+	//curr_pos.Print();
+	if (!IsPosCorrect(pos)) {
+		return;
+	}
 	if(Matrix[pos.X][pos.Y].Sign==MAP_ELEMENT_UNHARMED){
 		Matrix[pos.X][pos.Y].Sign=MAP_ELEMENT_DAMAGED;
 		Matrix[pos.X][pos.Y].Battleship->Harm();
+		//cout << " ::TRUE";
 
 	} else if (Matrix[pos.X][pos.Y].Sign==MAP_ELEMENT_EMPTY) {
 		Matrix[pos.X][pos.Y].Sign=MAP_ELEMENT_SLIP;
+		//cout << " ::FALSE";
 	}
 }
 void Map::Shoot(Position pos, int radius) {
 	//Shoot(pos);
 	int size = 2 * radius + 1;
-	Position origin;
-	origin.X = pos.X - radius;
-	origin.Y = pos.Y - radius; 
+	Position origin(pos.X - radius, pos.Y - radius);
 	for(int i=0; i<size; i++){
 		int start;
 		int end;
@@ -177,9 +181,7 @@ void Map::Shoot(Position pos, int radius) {
 			end = 3*radius - i;
 		}
 		for(int j=start; j<=end; j++){
-			Position curr_pos;
-			curr_pos.X = origin.X + i;
-			curr_pos.Y = origin.Y + j;
+			Position curr_pos(origin.X + i, origin.Y + j);
 			Shoot(curr_pos);
 			//A[i][j] = SYMBOL;
 		}
