@@ -6,7 +6,8 @@
 
 enum Orientation {
 	VERTICAL,
-	HORISONTAL
+	HORISONTAL,
+	UNDEFINED
 };
 
 Orientation GetRandomOrientation();

@@ -94,12 +94,27 @@ Map::Map(){
 	//ship.Init(Position(1, 1), Orientation::HORISONTAL);
 
 }
-Map::~Map() {
+void Map::ClearShipsList() {
 	for (int current_length = 1; current_length <= SHIPS_MAX_LENGTH; current_length++) {
 		for (int i = 0; i < ShipsList[current_length - 1].size(); i++) {
 			delete ShipsList[current_length - 1][i];
 		}
 	}
+}
+void Map::ClearMatrix() {
+	for (int i = 0; i < MAP_HEIGHT; i++) {
+		for (int j = 0; j < MAP_WIDTH; j++) {
+			Matrix[i][j].Sign = MAP_ELEMENT_EMPTY;
+			Matrix[i][j].Battleship = NULL;
+		}
+	}
+}
+Map::~Map() {
+	ClearShipsList();
+}
+void Map::Clear() {
+	ClearMatrix();
+	ClearShipsList();
 }
 void Map::PrintForEnemy(){
 	int max_num_length = NumCount(MAP_HEIGHT);
@@ -255,7 +270,44 @@ bool Map::AddShip(Position pos, Orientation orient, int length) {
 	}
 	return is_init;
 }
+bool Map::RemoveShip(Position pos) {
+	//Стереть его с карты
+	if (Matrix[pos.X][pos.Y].Battleship == NULL) {
+		return false;
+	}
+	Ship *ship = Matrix[pos.X][pos.Y].Battleship;
+	Position curr_pos;
+	curr_pos = ship->GetPosition();
+	for (int i = 0; i < ship->GetLength(); i++) {
+		Matrix[curr_pos.X][curr_pos.Y].Sign = MAP_ELEMENT_EMPTY;
+		Matrix[curr_pos.X][curr_pos.Y].Battleship = NULL;
+
+		if (ship->GetOrientation() == Orientation::VERTICAL) {
+			curr_pos.X++;
+		} else {
+			curr_pos.Y++;
+		}
+	}
+	//Удалить его из ShipsList
+	int found_el;
+	for(int i=0; i<ShipsList[ship->GetLength()].size(); i++){
+		if(ShipsList[ship->GetLength()][i]==ship){
+			found_el=i;
+			break;
+		}
+	}
+	for(int i=found_el+1; i<ShipsList[ship->GetLength()].size(); i++){
+		ShipsList[ship->GetLength()][i-1]=ShipsList[ship->GetLength()][i];
+
+	}
+	ShipsList[ship->GetLength()].resize(ShipsList[ship->GetLength()].size() - 1);
+
+	delete ship;
+
+	return true;
+}
 void Map::RandomFill(){
+	Clear();
 	for (int current_length = 1; current_length <= SHIPS_MAX_LENGTH; current_length++) {
 		int ships_count = SHIPS_MAX_LENGTH - current_length + 1;
 		for (int i = 0; i < ships_count; i++) {

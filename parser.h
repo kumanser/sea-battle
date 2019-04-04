@@ -13,5 +13,7 @@ int StrToInt(std::string str);
 char ToLower(char ch);
 int LetterToCoordinate(char ch);
 Position CoordinateParse(std::string cmd);
+void PrintHelp();
+bool ParseCommandShipInit(Map *map, std::string cmd);
 
 #endif

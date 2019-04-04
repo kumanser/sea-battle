@@ -39,15 +39,20 @@ class Map {
 	std::vector <Ship*> ShipsList[SHIPS_MAX_LENGTH];
 	bool CheckPosition(Ship *ship);
 	bool IsPosCorrect(Position pos);
+
+	void ClearShipsList();
+	void ClearMatrix();
 public:
 	Map();
 	~Map();
+	void Clear();
 	void PrintForEnemy();
 	void PrintForMe();
 	void Shoot(Position pos);
 	void Shoot(Position pos, int radius);
 	bool DrawShip(Ship *ship);
 	bool AddShip(Position pos, Orientation orient, int length);
+	bool RemoveShip(Position pos);
 	void RandomFill();
 	friend Ship;
 };

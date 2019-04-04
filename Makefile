@@ -1,4 +1,4 @@
-FLAGS=-pedantic -Wall -Werror -Wno-sign-compare -Wno-long-long -lm -pthread
+FLAGS=-pedantic -Wall -Werror -Wno-sign-compare -Wno-long-long -lm -pthread -std=c++11
 COMPILLER=g++
 
 all: start
