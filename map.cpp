@@ -283,9 +283,9 @@ bool Map::RemoveShip(Position pos) {
 		Matrix[curr_pos.X][curr_pos.Y].Battleship = NULL;
 
 		if (ship->GetOrientation() == Orientation::VERTICAL) {
-			curr_pos.X++;
-		} else {
 			curr_pos.Y++;
+		} else {
+			curr_pos.X++;
 		}
 	}
 	//Удалить его из ShipsList
