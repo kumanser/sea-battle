@@ -1,12 +1,11 @@
 #include <iostream>
 #include <ctime>
-#include "map.h"
-#include "parser.h"
+#include "interface.h"
 using namespace std;
 int main()
 {
 	srand(time(NULL));
-	Map map;
+	//Map map;
 	//Position pos(2, 3);
 	//map.AddShip(Position(2, 3), Orientation::VERTICAL, 3);
 	//map.AddShip(Position(3, 3), Orientation::HORISONTAL, 3);
@@ -15,7 +14,7 @@ int main()
 	//map.Shoot(0, 0);
 	//map.Shoot(0, 1);
 	//map.Shoot(1, 1);
-	cout << "For Me" << endl;
+	/*cout << "For Me" << endl;
 	map.PrintForMe();
 	cout << "For Enemy" << endl;
 	map.PrintForEnemy();
@@ -40,6 +39,10 @@ int main()
 	cout << "For Me" << endl;
 	map.PrintForMe();
 	cout << "For Enemy" << endl;
-	map.PrintForEnemy();
+	map.PrintForEnemy();*/
+
+	Interface interface;
+	interface.InitProcess();
+
 	return 0;
 }

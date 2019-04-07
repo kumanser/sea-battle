@@ -231,7 +231,7 @@ bool Map::CheckPosition(Ship *ship){
 			if (!IsPosCorrect(current_pos)) {
 				continue;
 			}
-			if (Matrix[current_pos.X][current_pos.Y].Sign==MAP_ELEMENT_UNHARMED) {
+			if (Matrix[current_pos.Y][current_pos.X].Sign==MAP_ELEMENT_UNHARMED) {
 				return false;
 			}
 		}
@@ -250,8 +250,8 @@ bool Map::DrawShip(Ship *ship){
 	}
 	Position current_pos=ship->GetPosition();
 	for(int i=0; i<ship->GetLength();i++){
-		Matrix[current_pos.X][current_pos.Y].Sign=MAP_ELEMENT_UNHARMED;
-		Matrix[current_pos.X][current_pos.Y].Battleship = ship;
+		Matrix[current_pos.Y][current_pos.X].Sign=MAP_ELEMENT_UNHARMED;
+		Matrix[current_pos.Y][current_pos.X].Battleship = ship;
 		if (ship->GetOrientation()==Orientation::VERTICAL){
 			current_pos.Y++;
 		} else {
@@ -272,15 +272,15 @@ bool Map::AddShip(Position pos, Orientation orient, int length) {
 }
 bool Map::RemoveShip(Position pos) {
 	//Стереть его с карты
-	if (Matrix[pos.X][pos.Y].Battleship == NULL) {
+	if (Matrix[pos.Y][pos.X].Battleship == NULL) {
 		return false;
 	}
-	Ship *ship = Matrix[pos.X][pos.Y].Battleship;
+	Ship *ship = Matrix[pos.Y][pos.X].Battleship;
 	Position curr_pos;
 	curr_pos = ship->GetPosition();
 	for (int i = 0; i < ship->GetLength(); i++) {
-		Matrix[curr_pos.X][curr_pos.Y].Sign = MAP_ELEMENT_EMPTY;
-		Matrix[curr_pos.X][curr_pos.Y].Battleship = NULL;
+		Matrix[curr_pos.Y][curr_pos.X].Sign = MAP_ELEMENT_EMPTY;
+		Matrix[curr_pos.Y][curr_pos.X].Battleship = NULL;
 
 		if (ship->GetOrientation() == Orientation::VERTICAL) {
 			curr_pos.Y++;
@@ -320,6 +320,31 @@ void Map::RandomFill(){
 				tmp_pos.SetRandom();
 			} while (!new_ship->Init(tmp_pos,tmp_orient));
 			ShipsList[current_length - 1].push_back(new_ship);
+		}
+	}
+}
+
+
+MapField Map::GetMapElement(int i, int j) {
+	return Matrix[i][j];
+}
+MapField Map::GetMapElement(Position pos) {
+	return Matrix[pos.Y][pos.X];
+}
+
+
+MapBasic::MapBasic() {
+	for (int i = 0; i < MAP_HEIGHT; i++) {
+		for (int j = 0; j < MAP_WIDTH; j++) {
+			Matrix[i][j] = MAP_ELEMENT_EMPTY;
+		}
+	}
+}
+
+void MapBasic::Import(Map &map) {
+	for(int i=0; i < MAP_HEIGHT; i++ ){
+		for(int j=0; j < MAP_WIDTH; j++){
+			Matrix[i][j] = (map.GetMapElement(i, j).Sign == MAP_ELEMENT_UNHARMED ? MAP_ELEMENT_EMPTY : map.GetMapElement(i, j).Sign);
 		}
 	}
 }

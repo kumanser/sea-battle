@@ -54,7 +54,20 @@ public:
 	bool AddShip(Position pos, Orientation orient, int length);
 	bool RemoveShip(Position pos);
 	void RandomFill();
+	void GetCharMap(char **char_map);
+	MapField GetMapElement(int i, int j);
+	MapField GetMapElement(Position pos);
 	friend Ship;
 };
+
+class MapBasic {
+public:
+	char Matrix[MAP_HEIGHT][MAP_WIDTH];
+
+	MapBasic();
+	void Import(Map &map);
+};
+
+void SetEmptyCharMap(char **char_map);
 
 #endif
