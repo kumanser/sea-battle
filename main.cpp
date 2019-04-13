@@ -5,6 +5,7 @@ using namespace std;
 int main()
 {
 	srand(time(NULL));
+	cout<<" Чтобы начать игру, введите 'start' "<<endl;
 	//Map map;
 	//Position pos(2, 3);
 	//map.AddShip(Position(2, 3), Orientation::VERTICAL, 3);
@@ -42,7 +43,10 @@ int main()
 	map.PrintForEnemy();*/
 
 	Interface interface;
-	interface.InitProcess();
+	if (!interface.InitProcess()) {
+		return 0;
+	}
+	interface.GameplayProcess();
 
 	return 0;
 }

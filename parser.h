@@ -8,6 +8,14 @@
 #include "geometry.h"
 #include "map.h"
 
+struct ParserStepResult {
+	bool GlobalContinue;
+	bool LocalContinue;
+	ShootResult ShootStatus;
+
+	ParserStepResult();
+};
+
 class InitElements {
 	int ShipsNotUsed[SHIPS_MAX_LENGTH];
 
@@ -16,6 +24,7 @@ public:
 	void UseAllShips();
 	bool UseShip(int length);
 	void FreeShip(int length);
+	bool IsAllUsed();
 };
 
 
@@ -27,7 +36,8 @@ void PrintHelp();
 bool ParseCmdSet(Map &map, std::string cmd, InitElements &init_data);
 bool ParseCmdDelete(Map &map, std::string cmd, InitElements &init_data);
 void ParseCmdClear(Map &map, InitElements &init_data);
-bool ParseCommandShipInit(Map &map, std::string cmd, InitElements &init_data);
+ParserStepResult ParseCommandShipInit(Map &map, std::string cmd, InitElements &init_data);
+ParserStepResult ParseCommandGameplay(Map &map_me, MapBasic &map_enemy, std::string cmd, int radius);
 
 
 #endif

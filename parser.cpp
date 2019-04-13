@@ -9,6 +9,11 @@
 
 using namespace std;
 
+ParserStepResult::ParserStepResult() {
+	GlobalContinue = true;
+	LocalContinue = true;
+}
+
 void InitElements::SetDefault() {
 	for(int i=0; i<SHIPS_MAX_LENGTH; i++){
 		ShipsNotUsed[i]=SHIPS_MAX_LENGTH-i;
@@ -29,6 +34,15 @@ bool InitElements::UseShip(int length) {
 }
 void InitElements::FreeShip(int length) {
 	ShipsNotUsed[length - 1] ++;
+}
+
+bool InitElements::IsAllUsed() {
+	for (int i = 0; i < SHIPS_MAX_LENGTH; i++) {
+		if (ShipsNotUsed[i] != 0) {
+			return false;
+		}
+	}
+	return true;
 }
 
 string GetParameter(string str, int num) {
@@ -92,14 +106,28 @@ Orientation OrientationParse(string cmd) {
 
 }
 
-void PrintHelp() {
+const string MSG_JK = "Не, ну это катастрофа, бред какой-то, успокойтесь, молодой человек!";
+
+void PrintHelpInit() {
 	cout << "==================================================================================" << endl;
+	cout << "|start — начать игру                                                             |" << endl;
 	cout << "|set <length (3)> <position (A2)> <orientation (v/h)> — поместить корабль на поле|" << endl;
 	cout << "|    Пример: set 3 A2 v                                                          |" << endl;
 	cout << "|set random — случайная расстановка кораблей                                     |" << endl;
 	cout << "|delete <position (A2)> — удаление корабля, расположенного на данной клетке      |" << endl;
 	cout << "|    Пример: delete A2                                                           |" << endl;
 	cout << "|clear — очистить поле                                                           |" << endl;
+	cout << "|show — показать поле                                                            |" << endl;
+	cout << "|help — показать справку                                                         |" << endl;
+	cout << "|exit — выйти                                                                    |" << endl;
+	cout << "==================================================================================" << endl << endl;
+}
+void PrintHelpGameplay() {
+	cout << "==================================================================================" << endl;
+	cout << "|shoot <position (A2)> — произвести выстрел по заданной координате               |" << endl;
+	cout << "|    Пример: shoot A2                                                            |" << endl;
+	cout << "|show — показать поле                                                            |" << endl;
+	cout << "|help — показать справку                                                         |" << endl;
 	cout << "|exit — выйти                                                                    |" << endl;
 	cout << "==================================================================================" << endl << endl;
 }
@@ -144,50 +172,63 @@ void ParseCmdClear(Map &map, InitElements &init_data) {
 	map.Clear();
 }
 
-bool ParseCommandShipInit(Map &map, string cmd, InitElements &init_data) {
+ParserStepResult ParseCommandShipInit(Map &map, string cmd, InitElements &init_data) {
 	string cmd_name = GetParameter(cmd, 0);
 
-	bool res;
+	ParserStepResult res;
 	if (cmd_name == "help") {
-		PrintHelp();
-		return true;
+		PrintHelpInit();
+		return res;
 	}
 
 	if (cmd_name == "set") {
-		res = ParseCmdSet(map, cmd, init_data);
-		if (res) {
+		if (ParseCmdSet(map, cmd, init_data)) {
 			map.PrintForMe();
 		} else {
 			cout << "Параметры корабля введены некорректно" << endl;
 		}
-		return true;
+		return res;
 	}
 
 	if (cmd_name == "delete") {
-		res = ParseCmdDelete(map, cmd, init_data);
-		if (res) {
+		if (ParseCmdDelete(map, cmd, init_data)) {
 			map.PrintForMe();
 		} else {
 			cout << "Неверная позиция" << endl;
 		}
-		return true;
+		return res;
+	}
+	if (cmd_name == "show") {
+		map.PrintForMe();
+		return res;
 	}
 
 	if (cmd_name == "clear") {
 		ParseCmdClear(map, init_data);
 		map.PrintForMe();
-		return true;
+		return res;
 	}
 
 	if (cmd_name == "exit") {
 		cout << "До свидания! :)" << endl;
-		return false;
+		res.GlobalContinue = false;
+		res.LocalContinue = false;
+		return res;
+	}
+	if (cmd_name == "Romanoff") {
+		cout << MSG_JK <<endl;
+		return res;
 	}
 
 	if (cmd_name == "start") {
+		if (!init_data.IsAllUsed()) {
+			cout << "Некоторые корабли не установлены" << endl;
+			return res;
+		}
 		cout << "Начинаем..." << endl;
-		//Добавить доп. переменную
-		return false;
+		//cout << "Чтобы получить список доступных команд, введите 'help'"<<endl;
+		res.LocalContinue = false;
+		return res;
 	}
 
 
@@ -208,6 +249,54 @@ bool ParseCommandShipInit(Map &map, string cmd, InitElements &init_data) {
 		case "exit":
 			return false;
 	}*/
-	cout << "Команда введена неверно" << endl;
-	return true;
+	cout << MSG_JK << endl;
+	return res;
+}
+ParserStepResult ParseCommandGameplay(Map &map_me, MapBasic &map_enemy, std::string cmd, int radius){
+	string cmd_name = GetParameter(cmd, 0);
+
+	ParserStepResult res;
+	if (cmd_name == "help") {
+		PrintHelpGameplay();
+		return res;
+	}
+
+	if (cmd_name == "show") {
+		map_me.PrintForMe();
+		map_enemy.Print();
+		return res;
+	}
+
+	if (cmd_name == "shoot") {
+		string pos_str = GetParameter(cmd, 1);
+		Position pos = CoordinateParse(pos_str);
+
+		res.ShootStatus = map_me.Shoot(pos, radius);
+		map_enemy.Import(map_me); //Временное решение
+
+		map_me.PrintForMe();
+		map_enemy.Print();
+
+		bool is_enemy_dead = map_me.IsAllShipsDead(); //Временное решение - будет передаваться в межпроцессорном сообщении
+
+		if (is_enemy_dead) {
+			cout << "Враг уничтожен. Игра окончена" << endl;
+			res.LocalContinue = false;
+		}
+		return res;
+	}
+
+	if (cmd_name == "exit") {
+		cout << "До свидания! :)" << endl;
+		res.GlobalContinue = false;
+		res.LocalContinue = false;
+		return res;
+	}
+	if (cmd_name == "Romanoff") {
+		cout << MSG_JK <<endl;
+		return res;
+	}
+
+	cout << "Команда введена неверно или данной команды не существует" << endl;
+	return res;
 }

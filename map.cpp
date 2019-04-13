@@ -5,6 +5,10 @@
 
 using namespace std;
 
+ShootResult GetMaxShootResult(ShootResult a, ShootResult b) {
+	return (a > b ? a : b);
+}
+
 int NumCount(int num){
 	int cnt=0;
 	while(num != 0){
@@ -53,14 +57,14 @@ void Ship::DrawCircuit() {
 		pos_end.Y=pos_begin.Y+2;
 	}
 
-	for(int i=pos_begin.X; i <= pos_end.X; i++){
-		for(int j=pos_begin.Y; j <= pos_end.Y; j++){
-			Position current_pos(i, j);
+	for(int i=pos_begin.Y; i <= pos_end.Y; i++){
+		for(int j=pos_begin.X; j <= pos_end.X; j++){
+			Position current_pos(j, i);
 			if (!Battlefield->IsPosCorrect(current_pos)) {
 				continue;
 			}
-			if (Battlefield->Matrix[current_pos.X][current_pos.Y].Sign==MAP_ELEMENT_EMPTY) {
-				Battlefield->Matrix[current_pos.X][current_pos.Y].Sign=MAP_ELEMENT_SLIP;
+			if (Battlefield->Matrix[current_pos.Y][current_pos.X].Sign==MAP_ELEMENT_EMPTY) {
+				Battlefield->Matrix[current_pos.Y][current_pos.X].Sign=MAP_ELEMENT_SLIP;
 			}
 		}
 	}
@@ -99,6 +103,7 @@ void Map::ClearShipsList() {
 		for (int i = 0; i < ShipsList[current_length - 1].size(); i++) {
 			delete ShipsList[current_length - 1][i];
 		}
+		ShipsList[current_length - 1].clear();
 	}
 }
 void Map::ClearMatrix() {
@@ -166,25 +171,32 @@ void Map::PrintForMe(){
 	}
 	cout << endl;
 }
-void Map::Shoot(Position pos){
+ShootResult Map::Shoot(Position pos){
 	//curr_pos.Print();
 	if (!IsPosCorrect(pos)) {
-		return;
+		return ShootResult::INCORRECT;
 	}
-	if(Matrix[pos.X][pos.Y].Sign==MAP_ELEMENT_UNHARMED){
-		Matrix[pos.X][pos.Y].Sign=MAP_ELEMENT_DAMAGED;
-		Matrix[pos.X][pos.Y].Battleship->Harm();
+	if(Matrix[pos.Y][pos.X].Sign==MAP_ELEMENT_UNHARMED){
+		Matrix[pos.Y][pos.X].Sign=MAP_ELEMENT_DAMAGED;
+		if (Matrix[pos.Y][pos.X].Battleship->Harm()) {
+			return ShootResult::KILLED;
+		}
+		return ShootResult::HURT;
 		//cout << " ::TRUE";
 
-	} else if (Matrix[pos.X][pos.Y].Sign==MAP_ELEMENT_EMPTY) {
-		Matrix[pos.X][pos.Y].Sign=MAP_ELEMENT_SLIP;
+	} else if (Matrix[pos.Y][pos.X].Sign==MAP_ELEMENT_EMPTY) {
+		Matrix[pos.Y][pos.X].Sign=MAP_ELEMENT_SLIP;
+		
 		//cout << " ::FALSE";
 	}
+	return ShootResult::SLIP;
 }
-void Map::Shoot(Position pos, int radius) {
+ShootResult Map::Shoot(Position pos, int radius) {
 	//Shoot(pos);
 	int size = 2 * radius + 1;
 	Position origin(pos.X - radius, pos.Y - radius);
+
+	ShootResult res = ShootResult::INCORRECT;
 	for(int i=0; i<size; i++){
 		int start;
 		int end;
@@ -197,10 +209,12 @@ void Map::Shoot(Position pos, int radius) {
 		}
 		for(int j=start; j<=end; j++){
 			Position curr_pos(origin.X + i, origin.Y + j);
-			Shoot(curr_pos);
+			res = GetMaxShootResult(res, Shoot(curr_pos));
 			//A[i][j] = SYMBOL;
 		}
 	}
+
+	return res;
 }
 bool Map::CheckPosition(Ship *ship){
 	//Проверка, умещаются ли корабли в поле
@@ -324,6 +338,17 @@ void Map::RandomFill(){
 	}
 }
 
+bool Map::IsAllShipsDead() {
+	for(int i=0; i<SHIPS_MAX_LENGTH; i++){
+		for(int j=0; j<ShipsList[i].size(); j++){
+			if (!ShipsList[i][j]->IsDead()) {
+				return false;
+			}
+		}
+	}
+	return true;
+}
+
 
 MapField Map::GetMapElement(int i, int j) {
 	return Matrix[i][j];
@@ -347,4 +372,27 @@ void MapBasic::Import(Map &map) {
 			Matrix[i][j] = (map.GetMapElement(i, j).Sign == MAP_ELEMENT_UNHARMED ? MAP_ELEMENT_EMPTY : map.GetMapElement(i, j).Sign);
 		}
 	}
+}
+void MapBasic::Print() {
+	int max_num_length = NumCount(MAP_HEIGHT);
+	for (int i = 0; i < max_num_length; i++) {
+		cout << MAP_ELEMENT_SPACE;
+	}
+	cout << MAP_ELEMENT_SPACE;
+	for(int i=0;i<MAP_WIDTH;i++){
+		cout<< (char)('A'+i)<< MAP_ELEMENT_SPACE;
+	}
+	cout<<endl;
+	for(int i=0; i<MAP_HEIGHT; i++){
+		int current_num_length = NumCount(i+1);
+		cout << 1 + i << MAP_ELEMENT_SPACE;
+		for(int j=0; j<max_num_length-current_num_length; j++){
+			cout<<MAP_ELEMENT_SPACE;
+		} 
+		for(int j=0; j<MAP_WIDTH; j++){
+			cout<<Matrix[i][j]<<MAP_ELEMENT_SPACE;
+		}
+		cout<<endl;
+	}
+	cout << endl;
 }

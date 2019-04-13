@@ -6,6 +6,15 @@
 #include "geometry.h"
 #include <vector>
 
+enum ShootResult {
+	INCORRECT,
+	SLIP,
+	HURT,
+	KILLED
+};
+
+ShootResult GetMaxShootResult(ShootResult a, ShootResult b);
+
 int NumCount(int num);
 
 class Map;
@@ -48,13 +57,14 @@ public:
 	void Clear();
 	void PrintForEnemy();
 	void PrintForMe();
-	void Shoot(Position pos);
-	void Shoot(Position pos, int radius);
+	ShootResult Shoot(Position pos);
+	ShootResult Shoot(Position pos, int radius);
 	bool DrawShip(Ship *ship);
 	bool AddShip(Position pos, Orientation orient, int length);
 	bool RemoveShip(Position pos);
 	void RandomFill();
-	void GetCharMap(char **char_map);
+	bool IsAllShipsDead();
+	//void GetCharMap(char **char_map);
 	MapField GetMapElement(int i, int j);
 	MapField GetMapElement(Position pos);
 	friend Ship;
@@ -66,6 +76,7 @@ public:
 
 	MapBasic();
 	void Import(Map &map);
+	void Print();
 };
 
 void SetEmptyCharMap(char **char_map);

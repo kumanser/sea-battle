@@ -19,11 +19,15 @@ class Interface {
 	//char MapEnemy[MAP_HEIGHT][MAP_WIDTH];
 	MapBasic MapEnemy;
 	InitElements InitData;
+	int CurrRadius;
+
+	void PrintCmdPrefix();
 public:
 
 	Interface();
 
 	bool InitProcess();
+	bool GameplayProcess();
 };
 
 #endif

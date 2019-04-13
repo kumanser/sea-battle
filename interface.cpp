@@ -9,17 +9,34 @@
 using namespace std;
 
 Interface::Interface() {
+	CurrRadius = 0;
+}
+
+void Interface::PrintCmdPrefix() {
+	cout << ">>> ";
 }
 
 bool Interface::InitProcess() {
-	while (true) {
+	ParserStepResult res;
+	while (res.LocalContinue) {
 		string cmd;
-		cout << ">>> ";
+		PrintCmdPrefix();
 		getline(cin, cmd);
-		if (!ParseCommandShipInit(MapMe, cmd, InitData)) {
-			break;
-		}
+		res = ParseCommandShipInit(MapMe, cmd, InitData);
 	}
-	return false;
+
+	return res.GlobalContinue;
+}
+
+bool Interface::GameplayProcess() {
+	ParserStepResult res;
+	while (res.LocalContinue) {
+		string cmd;
+		PrintCmdPrefix();
+		getline(cin, cmd);
+		res = ParseCommandGameplay(MapMe, MapEnemy, cmd, CurrRadius);
+	}
+
+	return res.GlobalContinue;
 }
 
