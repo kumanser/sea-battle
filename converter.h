@@ -11,9 +11,9 @@ std::string StringToLower(std::string str);
 std::string RemoveSpecial(std::string str);
 bool IsCharNum(char sym);
 bool IsStringNum(std::string str);
-char UNumToChar(size_t num);
-std::string UNumToString(size_t num);
-size_t CharToUNum(char sym);
-size_t StringToUNum(std::string str);
+char UNumToChar(unsigned int num);
+std::string UNumToString(unsigned int num);
+unsigned int CharToUNum(char sym);
+unsigned int StringToUNum(std::string str);
 
 #endif // CONVERTER_H

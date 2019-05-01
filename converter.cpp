@@ -21,7 +21,7 @@ bool IsSeparator(char sym) {
 }
 string StringReverse(std::string str) {
 	string new_str = "";
-	for (size_t i = str.size(); i > 0; i--) {
+	for (unsigned int i = str.size(); i > 0; i--) {
 		new_str += str[i - 1];
 	}
 	return new_str;
@@ -36,7 +36,7 @@ char CharToLower(char sym) {
 }
 
 string StringToLower(string str) {
-	for (size_t i = 0; i < str.size(); i++) {
+	for (unsigned int i = 0; i < str.size(); i++) {
 		str[i] = CharToLower(str[i]);
 	}
 	return str;
@@ -45,7 +45,7 @@ string StringToLower(string str) {
 string RemoveSpecial(string str) {
 	string new_str = "";
 	bool is_first_space = true;
-	for (size_t i = 0; i < str.size(); i++) {
+	for (unsigned int i = 0; i < str.size(); i++) {
 		if (!IsSeparator(str[i])) {
 			is_first_space = true;
 		}
@@ -66,7 +66,7 @@ bool IsCharNum(char sym) {
 	return sym >= '0' && sym <= '9';
 }
 bool IsStringNum(string str) {
-	for (size_t i = 0; i < str.size(); i++) {
+	for (unsigned int i = 0; i < str.size(); i++) {
 		if (!IsCharNum(str[i])) {
 			return false;
 		}
@@ -74,27 +74,27 @@ bool IsStringNum(string str) {
 	return true;
 }
 
-char UNumToChar(size_t num) {
+char UNumToChar(unsigned int num) {
 	return num + '0';
 }
-string UNumToString(size_t num) {
+string UNumToString(unsigned int num) {
 	string str = "";
 	while (num > 0) {
-		size_t md = num % 10;
+		unsigned int md = num % 10;
 		num /= 10;
 		str += UNumToChar(md);
 	}
 	return StringReverse(str);
 }
-size_t CharToUNum(char sym) {
+unsigned int CharToUNum(char sym) {
 	if (IsCharNum(sym)) {
 		return sym - '0';
 	}
 	return 0;
 }
-size_t StringToUNum(string str) {
-	size_t res = 0;
-	for (size_t i = 0; i < str.size(); i++) {
+unsigned int StringToUNum(string str) {
+	unsigned int res = 0;
+	for (unsigned int i = 0; i < str.size(); i++) {
 		res *= 10;
 		res += CharToUNum(str[i]);
 	}

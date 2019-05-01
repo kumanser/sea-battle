@@ -5,7 +5,9 @@ using namespace std;
 int main()
 {
 	srand(time(NULL));
-	cout<<" Чтобы начать игру, введите 'start' "<<endl;
+	cout<<"Рады приветствовать вас в игре 'Морской бой'"<<endl;
+	cout<<"Чтобы получить список доступных команд, введите 'help'"<<endl;
+	cout<<"Прежде чем начать игру, установите корабли на поле"<<endl;
 	//Map map;
 	//Position pos(2, 3);
 	//map.AddShip(Position(2, 3), Orientation::VERTICAL, 3);
@@ -43,10 +45,7 @@ int main()
 	map.PrintForEnemy();*/
 
 	Interface interface;
-	if (!interface.InitProcess()) {
-		return 0;
-	}
-	interface.GameplayProcess();
+	interface.Start();
 
 	return 0;
 }

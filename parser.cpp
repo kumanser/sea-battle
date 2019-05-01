@@ -106,7 +106,8 @@ Orientation OrientationParse(string cmd) {
 
 }
 
-const string MSG_JK = "Не, ну это катастрофа, бред какой-то, успокойтесь, молодой человек!";
+const string ANGRY_ROMANOV = "Не, ну это катастрофа, бред какой-то, успокойтесь, молодой человек!";
+const string STUPID_USER = "Команда введена неверно или данной команды не существует";
 
 void PrintHelpInit() {
 	cout << "==================================================================================" << endl;
@@ -134,10 +135,13 @@ void PrintHelpGameplay() {
 
 bool ParseCmdSet(Map &map, string cmd, InitElements &init_data) {
 	if (GetParameter(cmd, 1) == "random") {
-		map.RandomFill();
+	 	map.RandomFill();
 		init_data.UseAllShips();
 		return true;
-	}
+	} 
+	if (GetParameter(cmd, 1) <= "0" || GetParameter(cmd, 1) > "4") {
+		return false;
+	} 
 	int length = StringToUNum(GetParameter(cmd, 1));
 	Position pos = CoordinateParse(GetParameter(cmd, 2));
 	Orientation orient = OrientationParse(GetParameter(cmd, 3));
@@ -216,7 +220,10 @@ ParserStepResult ParseCommandShipInit(Map &map, string cmd, InitElements &init_d
 		return res;
 	}
 	if (cmd_name == "Romanoff") {
-		cout << MSG_JK <<endl;
+		cout << ANGRY_ROMANOV <<endl;
+		cout << "Выйдите вон из аудитории!!!" << endl;
+		res.GlobalContinue = false;
+		res.LocalContinue = false;
 		return res;
 	}
 
@@ -226,7 +233,6 @@ ParserStepResult ParseCommandShipInit(Map &map, string cmd, InitElements &init_d
 			return res;
 		}
 		cout << "Начинаем..." << endl;
-		//cout << "Чтобы получить список доступных команд, введите 'help'"<<endl;
 		res.LocalContinue = false;
 		return res;
 	}
@@ -249,7 +255,7 @@ ParserStepResult ParseCommandShipInit(Map &map, string cmd, InitElements &init_d
 		case "exit":
 			return false;
 	}*/
-	cout << MSG_JK << endl;
+	cout << STUPID_USER << endl;
 	return res;
 }
 ParserStepResult ParseCommandGameplay(Map &map_me, MapBasic &map_enemy, std::string cmd, int radius){
@@ -293,10 +299,10 @@ ParserStepResult ParseCommandGameplay(Map &map_me, MapBasic &map_enemy, std::str
 		return res;
 	}
 	if (cmd_name == "Romanoff") {
-		cout << MSG_JK <<endl;
+		cout << ANGRY_ROMANOV <<endl;
 		return res;
 	}
 
-	cout << "Команда введена неверно или данной команды не существует" << endl;
+	cout << STUPID_USER << endl;
 	return res;
 }

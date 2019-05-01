@@ -5,16 +5,19 @@
 #include "geometry.h"
 #include "map.h"
 #include "parser.h"
+#include "connection.h"
 #include <vector>
 
-enum InterfaceStatus {
+/*enum InterfaceStatus {
 	CONNECT,
 	INIT,
 	GAMEPLAY
-};
+};*/
+
 
 class Interface {
-	InterfaceStatus Status;
+	//InterfaceStatus Status;
+	Connection Network;
 	Map MapMe;
 	//char MapEnemy[MAP_HEIGHT][MAP_WIDTH];
 	MapBasic MapEnemy;
@@ -25,7 +28,9 @@ class Interface {
 public:
 
 	Interface();
-
+	void Start();
+	void InitDevice();
+	bool InitConnection();
 	bool InitProcess();
 	bool GameplayProcess();
 };
