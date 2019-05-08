@@ -36,6 +36,8 @@ public:
 	void SendMessage(std::string msg);
 	std::string ReceiveMessage(unsigned int length);
 
+	void Sync();
+
 
 	DeviceMode GetMode();
 	std::string GetHost();

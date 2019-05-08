@@ -213,7 +213,10 @@ ParserStepResult ParseCommandShipInit(Map &map, string cmd, InitElements &init_d
 		return res;
 	}
 
-	if (cmd_name == "exit") {
+	if (cmd_name == "exit" || cmd_name.size() == 0) {
+		if (cmd.size() == 0) {
+			cout << "exit" << endl;
+		}
 		cout << "До свидания! :)" << endl;
 		res.GlobalContinue = false;
 		res.LocalContinue = false;
@@ -232,7 +235,7 @@ ParserStepResult ParseCommandShipInit(Map &map, string cmd, InitElements &init_d
 			cout << "Некоторые корабли не установлены" << endl;
 			return res;
 		}
-		cout << "Начинаем..." << endl;
+		//cout << "Начинаем..." << endl;
 		res.LocalContinue = false;
 		return res;
 	}

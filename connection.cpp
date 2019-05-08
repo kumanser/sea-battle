@@ -9,7 +9,6 @@
 
 using namespace std;
 
-
 Connection::Connection() {
 	Mode = DeviceMode::UNDEFINED_MODE;
 	Host = "";
@@ -109,7 +108,19 @@ string Connection::ReceiveMessage(unsigned int length) {
 
 	return res;
 
+}
 
-
+void Connection::Sync() {
+	if (GetMode() == DeviceMode::SERVER) {
+		//string test =
+		ReceiveMessage(MSG_CONFIRM.size());
+		//cout << "out = " << test << endl;
+		SendMessage(MSG_CONFIRM);
+	} else if (GetMode() == DeviceMode::CLIENT) {
+		SendMessage(MSG_CONFIRM);
+		//string test =
+		ReceiveMessage(MSG_CONFIRM.size());
+		//cout << "out = " << test << endl;
+	}
 }
 

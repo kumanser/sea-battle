@@ -70,13 +70,13 @@ bool Interface::InitConnection() {
 		Network.SetPort(port);
 
 		if (Network.Connect()) {
-			cout << "Успешно" << endl;
+			//cout << "Успешно" << endl;
 			break;
 		}
 		cout << "Ошибка подключения. Попробуйте ещё раз" << endl;
 	}
 
-	if (Network.GetMode() == DeviceMode::SERVER) {
+	/*if (Network.GetMode() == DeviceMode::SERVER) {
 		string test = Network.ReceiveMessage(19);
 		cout << test << endl;
 		Network.SendMessage("Success from server");
@@ -84,7 +84,10 @@ bool Interface::InitConnection() {
 		Network.SendMessage("Success from client");
 		string test = Network.ReceiveMessage(19);
 		cout << test << endl;
-	}
+	}*/
+	cout << "Подключение к другому игроку... " << endl;
+	Network.Sync();
+	cout << "Успешно" << endl;
 
 	return true;
 }
@@ -92,11 +95,22 @@ bool Interface::InitConnection() {
 bool Interface::InitProcess() {
 	cout << "Установите корабли на поле" << endl;
 	ParserStepResult res;
+	bool first = true;
 	while (res.LocalContinue) {
 		string cmd;
 		PrintCmdPrefix();
 		getline(cin, cmd);
+		if (cmd == "" && first) {
+			getline(cin, cmd);
+		}
+		
+		first = false;
 		res = ParseCommandShipInit(MapMe, cmd, InitData);
+	}
+	if (res.GlobalContinue) {
+		cout << "Ожидание другого игрока..." << endl;
+		Network.Sync();
+		cout << "Начинаем..." << endl;
 	}
 
 	return res.GlobalContinue;
