@@ -174,7 +174,22 @@ ShootResult Interface::DrawResult(string ans) {
 }
 
 bool Interface::ActiveMode() {
-	while (true) {
+
+	char a;
+	PrintCmdPrefix();
+	cin >> a;
+	string str = "";
+	str += a;
+	Network.SendMessage(str);
+
+	str = Network.ReceiveMessage(1);
+
+	cout << "Response: " << str << endl;
+
+
+
+
+	/*while (true) {
 		cout << "ACTIVE STEP" << endl;
 		string cmd;
 		PrintCmdPrefix();
@@ -217,17 +232,21 @@ bool Interface::ActiveMode() {
 				return false;
 			}
 		}
-	}
-	cout << "=======================================" << endl;
+	}*/
+	/*cout << "=======================================" << endl;
 	cout << "Active sync..." << endl;
 	Network.Sync();
-	cout << "Active end" << endl;
+	cout << "Active end" << endl;*/
 
 	return true;
 }
 
 bool Interface::PassiveMode() {
-	while (true) {
+
+	string str = Network.ReceiveMessage(1);
+	cout << "Request: " << str << endl;
+	Network.SendMessage(str);
+	/*while (true) {
 		cout << "PASSIVE STEP" << endl;
 		//Network.Sync();
 		cout << "Receive" << endl;
@@ -236,11 +255,6 @@ bool Interface::PassiveMode() {
 		cout << "ТУПО И НЕ ПОНЯТНО ГРУСТНО ГРУСТНО ПЕЧАЛЬНО" << endl;
 		cout << "RECEIVED MESSAGE: " << gotCmd <<endl;
 		cout << "Received successful" << endl;
-		/*if (FirstClientRecv) {
-			FirstClientRecv = false;
-			cout << "FirstClientRecv" << endl;
-			continue;
-		}*/
 
 		//cout << "PNT0" << endl;
 		string posStr = GetParameter(gotCmd, 0);
@@ -275,15 +289,15 @@ bool Interface::PassiveMode() {
 		//cout << "PNT2" << endl;
 
 		cout << "PASSIVE STEP END" << endl;
-		if (res == ShootResult::SLIP/* || res == ShootResult::INCORRECT*/) {
+		if (res == ShootResult::SLIP || res == ShootResult::INCORREC) {
 			cout << "PASSIVE BREAK" << endl;
 			break;
 		}
-	}
-	cout << "+++++++++++++++++++++++++++++++++" << endl;
+	}*/
+	/*cout << "+++++++++++++++++++++++++++++++++" << endl;
 	cout << "Passive sync..." << endl;
 	Network.Sync();
-	cout << "Passive end" << endl;
+	cout << "Passive end" << endl;*/
 	return true;
 }
 
