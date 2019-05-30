@@ -182,9 +182,10 @@ bool Interface::ActiveMode() {
 	str += a;
 	Network.SendMessage(str);
 
-	/*str = Network.ReceiveMessage(1);
+	str = Network.ReceiveMessage(1);
 
-	cout << "Response: " << str << endl;*/
+	cout << "Response: " << str << endl;
+	Network.SendMessage("a");
 
 
 
@@ -245,7 +246,8 @@ bool Interface::PassiveMode() {
 
 	string str = Network.ReceiveMessage(1);
 	cout << "Request: " << str << endl;
-	//Network.SendMessage(str);
+	Network.SendMessage(str);
+	Network.ReceiveMessage(1);
 	/*while (true) {
 		cout << "PASSIVE STEP" << endl;
 		//Network.Sync();
