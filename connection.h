@@ -38,6 +38,8 @@ public:
 
 	bool Sync();
 
+	void *GetSocket();
+
 
 	DeviceMode GetMode();
 	std::string GetHost();

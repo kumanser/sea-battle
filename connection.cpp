@@ -143,3 +143,7 @@ bool Connection::Sync() {
 	return true;
 }
 
+void *Connection::GetSocket() {
+	return ZmqSocket;
+}
+
