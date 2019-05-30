@@ -123,4 +123,3 @@ void Connection::Sync() {
 		//cout << "out = " << test << endl;
 	}
 }
-
