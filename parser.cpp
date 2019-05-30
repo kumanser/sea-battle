@@ -86,13 +86,23 @@ string GetParameter(string str, int num) {
 
 int LetterToCoordinate(char ch) {
 	ch = CharToLower(ch);
+	if (ch < 'a' || ch > 'z') {
+		return -1;
+	}
 	return ch - 'a';
 }
 
 Position CoordinateParse(string cmd) {
+	if (cmd.empty()) {
+		return Position(-1, -1);
+	}
 	string num_str = cmd.substr(1);
-	Position pos(LetterToCoordinate(cmd[0]), StringToUNum(num_str) - 1);
-	return pos;
+	int i = LetterToCoordinate(cmd[0]);
+	if (i == -1) {
+		return Position(-1, -1);
+	}
+	int j = StringToUNum(num_str) - 1;
+	return Position(i, j);
 }
 
 Orientation OrientationParse(string cmd) {
@@ -295,7 +305,7 @@ ParserStepResult ParseCommandGameplay(Map &map_me, MapBasic &map_enemy, std::str
 		return res;
 	}
 
-	if (cmd_name == "exit") {
+	if (cmd_name == "exit"|| cmd_name.size() == 0) {
 		cout << "До свидания! :)" << endl;
 		res.GlobalContinue = false;
 		res.LocalContinue = false;

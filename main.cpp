@@ -5,9 +5,6 @@ using namespace std;
 int main()
 {
 	srand(time(NULL));
-	cout<<"Рады приветствовать вас в игре 'Морской бой'"<<endl;
-	cout<<"Чтобы получить список доступных команд, введите 'help'"<<endl;
-	cout<<"Прежде чем начать игру, установите корабли на поле"<<endl;
 	//Map map;
 	//Position pos(2, 3);
 	//map.AddShip(Position(2, 3), Orientation::VERTICAL, 3);

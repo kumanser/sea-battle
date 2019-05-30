@@ -38,6 +38,7 @@ bool ParseCmdDelete(Map &map, std::string cmd, InitElements &init_data);
 void ParseCmdClear(Map &map, InitElements &init_data);
 ParserStepResult ParseCommandShipInit(Map &map, std::string cmd, InitElements &init_data);
 ParserStepResult ParseCommandGameplay(Map &map_me, MapBasic &map_enemy, std::string cmd, int radius);
+void ParseAnswerGameplay(MapBasic &map_enemy, std::string ans, int radius);
 
 
 #endif

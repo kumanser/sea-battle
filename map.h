@@ -43,6 +43,8 @@ struct MapField {
 	Ship *Battleship;
 };
 
+int LinearizePos(Position pos);
+
 class Map {
 	MapField Matrix[MAP_HEIGHT][MAP_WIDTH];
 	std::vector <Ship*> ShipsList[SHIPS_MAX_LENGTH];
@@ -67,6 +69,7 @@ public:
 	//void GetCharMap(char **char_map);
 	MapField GetMapElement(int i, int j);
 	MapField GetMapElement(Position pos);
+
 	friend Ship;
 };
 
@@ -77,8 +80,12 @@ public:
 	MapBasic();
 	void Import(Map &map);
 	void Print();
+	std::string ConvertToArray();
 };
 
 void SetEmptyCharMap(char **char_map);
+
+ShootResult GetShootResultByAns(char ans);
+std::string SetShootResultAns(ShootResult);
 
 #endif

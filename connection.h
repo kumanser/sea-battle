@@ -16,18 +16,18 @@ class Connection {
 	bool Connected;
 	DeviceMode Mode;
 	std::string Host;
-	int Port;
+	std::string Port;
 
 	void *ZmqContext;
 	void *ZmqSocket;
 
 public:
 	Connection();
-	Connection(DeviceMode mode, std::string host, int port);
+	Connection(DeviceMode mode, std::string host, std::string port);
 	~Connection();
 
 	void SetHost(std::string host);
-	void SetPort(int port);
+	void SetPort(std::string port);
 	void SetMode(DeviceMode mode);
 	bool Connect();
 	void Disconnect();
@@ -36,12 +36,12 @@ public:
 	void SendMessage(std::string msg);
 	std::string ReceiveMessage(unsigned int length);
 
-	void Sync();
+	bool Sync();
 
 
 	DeviceMode GetMode();
 	std::string GetHost();
-	int GetPort();
+	std::string GetPort();
 };
 
 #endif

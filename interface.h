@@ -23,6 +23,7 @@ class Interface {
 	MapBasic MapEnemy;
 	InitElements InitData;
 	int CurrRadius;
+	bool FirstClientRecv;
 
 	void PrintCmdPrefix();
 public:
@@ -33,6 +34,9 @@ public:
 	bool InitConnection();
 	bool InitProcess();
 	bool GameplayProcess();
+	bool ActiveMode();
+	bool PassiveMode();
+	ShootResult DrawResult(std::string ans);
 };
 
 #endif

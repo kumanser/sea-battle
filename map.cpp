@@ -77,6 +77,11 @@ bool Ship::Harm(){
 	}
 	return is_dead;
 }
+
+int LinearizePos(Position pos) {
+	return pos.X * MAP_WIDTH + pos.Y;
+}
+
 Map::Map(){
 	for(int i=0; i<MAP_HEIGHT; i++){
 		for(int j=0; j<MAP_WIDTH; j++){
@@ -395,4 +400,44 @@ void MapBasic::Print() {
 		cout<<endl;
 	}
 	cout << endl;
+}
+
+string MapBasic::ConvertToArray() {
+	string res;
+	res.resize(MAP_HEIGHT * MAP_WIDTH); //На случай ошибки в функции LinearizePos: в таком случае всё равно будет работать
+	for (int i = 0; i < MAP_HEIGHT; i++) {
+		for (int j = 0; j < MAP_WIDTH; j++) {
+			//res += Matrix[i][j];
+			res[LinearizePos(Position(i, j))] = Matrix[i][j];
+		}
+	}
+	return res;
+}
+
+ShootResult GetShootResultByAns(char ans) {
+	if (ans == '0') {
+		return ShootResult::SLIP;
+	}
+	if (ans == '1') {
+		return ShootResult::HURT;
+	}
+	if (ans == '2') {
+		return ShootResult::KILLED;
+	}
+
+	return ShootResult::INCORRECT;
+}
+
+string SetShootResultAns(ShootResult res) {
+	if (res == ShootResult::SLIP) {
+		return "0";
+	}
+	if (res == ShootResult::HURT) {
+		return "1";
+	}
+	if (res == ShootResult::KILLED) {
+		return "2";
+	}
+
+	return "0";
 }
