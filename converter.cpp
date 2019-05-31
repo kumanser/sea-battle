@@ -104,6 +104,16 @@ unsigned int StringToUNum(string str) {
 	return res;
 }
 
+unsigned int NumLength(int num) {
+	unsigned int cnt = 0;
+
+	while (num > 0) {
+		cnt++;
+		num /= 10;
+	}
+	return cnt;
+}
+
 /*unsigned int GetElementCountByRadius(unsigned int radius) {
 	unsigned int size = 2 * radius + 1;
 	unsigned int sum = 0;

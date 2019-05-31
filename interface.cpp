@@ -189,11 +189,14 @@ bool Interface::ActiveMode() {
 
 		if (GetParameter(cmd, 0) == "shoot") {
 			string posStr = GetParameter(cmd, 1);
-			string sendCmd = posStr + " " + UNumToString(CurrRadius);
-
-			while (cmd.size() < MSG_GAMEPLAY_REQ_LEN) {
-				cmd += " ";
+			//string sendCmd = posStr + " " + UNumToString(CurrRadius);
+			string sendCmd = posStr + " ";
+			cout << "NumLength = " << NumLength(CurrRadius) << endl;
+			while (sendCmd.size() < MSG_GAMEPLAY_REQ_LEN - NumLength(CurrRadius)) {
+				sendCmd += "0";
 			}
+			sendCmd += UNumToString(CurrRadius);
+			cout << "SendCmd: " << sendCmd << endl;
 
 			//Network.Sync();
 			//cout << "ACTIVE SEND" << endl;
