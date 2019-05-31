@@ -191,10 +191,10 @@ bool Interface::ActiveMode() {
 			}
 
 			//Network.Sync();
-			cout << "Send" << endl;
+			cout << "ACTIVE SEND" << endl;
 			Network.SendMessage(sendCmd);
 			cout << "SENDED MESSAGE: " <<sendCmd<<endl;
-			cout << "Receive..." << endl;
+			cout << "ACTIVE Receive..." << endl;
 			string ans = Network.ReceiveMessage(MSG_GAMEPLAY_ANS_LEN);
 			cout << "Received successful" << endl;
 
@@ -229,11 +229,14 @@ bool Interface::ActiveMode() {
 bool Interface::PassiveMode() {
 	while (true) {
 		cout << "PASSIVE STEP" << endl;
+		cout << "Send Hello bro" <<endl;
+			string CmdBro = "Hello bro";
+			Network.SendMessage(CmdBro);
 		//Network.Sync();
-		cout << "Receive" << endl;
+		//cout << "Receive" << endl;
 		string gotCmd = Network.ReceiveMessage(MSG_GAMEPLAY_REQ_LEN);
-		cout << "ЗДЕСЬ ВСЁ КРАШИТСЯ" << endl;
-		cout << "ТУПО И НЕ ПОНЯТНО ГРУСТНО ГРУСТНО ПЕЧАЛЬНО" << endl;
+		//cout << "ЗДЕСЬ ВСЁ КРАШИТСЯ" << endl;
+		//cout << "ТУПО И НЕ ПОНЯТНО ГРУСТНО ГРУСТНО ПЕЧАЛЬНО" << endl;
 		cout << "RECEIVED MESSAGE: " << gotCmd <<endl;
 		cout << "Received successful" << endl;
 		/*if (FirstClientRecv) {
@@ -249,9 +252,9 @@ bool Interface::PassiveMode() {
 		//cout << "PNT02" << endl;
 
 		Position pos = CoordinateParse(posStr);
-		if (pos.X == -1) {
-			continue;
-		}
+		//if (pos.X == -1) {
+			//continue;
+		//}
 		//cout << "PNT03" << endl;
 		unsigned int radius = StringToUNum(radiusStr);
 		//cout << "PNT1" << endl;
@@ -266,10 +269,11 @@ bool Interface::PassiveMode() {
 		cout << "SendRes = " << sendRes << endl;
 		cout << "SendMsg Len = " << sendMsg.size() << endl;
 
-		
 		if (res != ShootResult::INCORRECT) {
-			cout << "Send" << endl;
-			Network.SendMessage(sendMsg);	
+			cout << "PASSIVE Send" << endl;
+			Network.SendMessage(sendMsg);
+			string Guy = Network.ReceiveMessage(MSG_GAMEPLAY_REQ_LEN);
+			cout << "IGNOR PASSIV KOSTYL Receive: govno = " << Guy <<endl;
 		}
 		
 		//cout << "PNT2" << endl;
