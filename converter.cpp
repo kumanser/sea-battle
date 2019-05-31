@@ -78,6 +78,9 @@ char UNumToChar(unsigned int num) {
 	return num + '0';
 }
 string UNumToString(unsigned int num) {
+	if (num == 0) {
+		return "0";
+	}
 	string str = "";
 	while (num > 0) {
 		unsigned int md = num % 10;
@@ -100,3 +103,27 @@ unsigned int StringToUNum(string str) {
 	}
 	return res;
 }
+
+unsigned int NumLength(int num) {
+	unsigned int cnt = 0;
+
+	while (num > 0) {
+		cnt++;
+		num /= 10;
+	}
+	return cnt;
+}
+
+/*unsigned int GetElementCountByRadius(unsigned int radius) {
+	unsigned int size = 2 * radius + 1;
+	unsigned int sum = 0;
+	for (unsigned int i = 1; i <= size; i += 2) {
+		if (i != size) {
+			sum += 2 * i;
+		} else {
+			sum += i;
+		}
+	}
+	return sum;
+}*/
+

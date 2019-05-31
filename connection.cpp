@@ -17,7 +17,7 @@ Connection::Connection() {
 	ZmqContext = NULL;
 	ZmqSocket = NULL;
 }
-Connection::Connection(DeviceMode mode, std::string host, int port) {
+Connection::Connection(DeviceMode mode, std::string host, std::string port) {
 	SetMode(mode);
 	SetHost(host);
 	SetPort(port);
@@ -34,7 +34,7 @@ void Connection::SetHost(std::string host) {
 	Host = host;
 }
 
-void Connection::SetPort(int port) {
+void Connection::SetPort(std::string port) {
 	Port = port;
 }
 
@@ -51,11 +51,11 @@ bool Connection::Connect() {
 
 	if (Mode == DeviceMode::SERVER) {
 		ZmqSocket = zmq_socket(ZmqContext, ZMQ_REP);
-		string addr = "tcp://*:" + UNumToString((unsigned int) Port);
+		string addr = "tcp://*:" + Port;
 		Connected = (zmq_bind(ZmqSocket, addr.c_str()) == 0);
 	} else {
 		ZmqSocket = zmq_socket(ZmqContext, ZMQ_REQ);
-		string addr = "tcp://" + Host + ":" + UNumToString((unsigned int) Port);
+		string addr = "tcp://" + Host + ":" + Port;
 		Connected = (zmq_connect(ZmqSocket, addr.c_str()) == 0);
 	}
 
@@ -83,7 +83,7 @@ string Connection::GetHost() {
 	return Host;
 }
 
-int Connection::GetPort() {
+string Connection::GetPort() {
 	return Port;
 }
 
@@ -100,26 +100,45 @@ string Connection::ReceiveMessage(unsigned int length) {
 	zmq_msg_init(&zmq_message);
 	zmq_msg_recv(&zmq_message, ZmqSocket, 0);
 
+	//cout << "PNT0" << endl;
 	char *tmp_arr = new char[length];
+	//cout << "PNT1" << endl;
 	memcpy(tmp_arr, zmq_msg_data(&zmq_message), length);
-	string res(tmp_arr);
+	//string res(tmp_arr);
+	//cout << "PNT2" << endl;
+	string res = "";
+	for (int i = 0; i < length; i++) {
+		res += tmp_arr[i];
+	}
+	//cout << "PNT3" << endl;
+	cout << "len = " << length << endl;
+	cout << "msg = " << res << endl;
+	//cout << "PNT4" << endl;
 	delete [] tmp_arr;
+	//cout << "PNT5" << endl;
 	zmq_msg_close(&zmq_message);
+	cout << res << endl;
 
 	return res;
 
 }
 
-void Connection::Sync() {
+bool Connection::Sync() {
 	if (GetMode() == DeviceMode::SERVER) {
-		//string test =
-		ReceiveMessage(MSG_CONFIRM.size());
+		string msg = ReceiveMessage(MSG_CONFIRM.size());
+		if (msg == MSG_EXIT) {
+			return false;
+		}
 		//cout << "out = " << test << endl;
 		SendMessage(MSG_CONFIRM);
 	} else if (GetMode() == DeviceMode::CLIENT) {
 		SendMessage(MSG_CONFIRM);
-		//string test =
-		ReceiveMessage(MSG_CONFIRM.size());
+		//cout << "MSG_SENDED" << endl;
+		string msg = ReceiveMessage(MSG_CONFIRM.size());
+		if (msg == MSG_EXIT) {
+			return false;
+		}
 		//cout << "out = " << test << endl;
 	}
+	return true;
 }

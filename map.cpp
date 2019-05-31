@@ -22,6 +22,7 @@ Ship::Ship(Map *battlefield, int length){
 	Battlefield = battlefield;
 	Length = length;
 	IsInit = false;
+	Damage = 0;
 }
 
 bool Ship::Init(Position pos, Orientation orient){
@@ -71,12 +72,19 @@ void Ship::DrawCircuit() {
 }
 bool Ship::Harm(){
 	Damage++;
+	cout << "Damage = " << Damage << endl;
 	bool is_dead = IsDead();
+	cout << "IsDead = " << (is_dead ? "true" : "false") << endl;
 	if (is_dead) {
 		DrawCircuit();
 	}
 	return is_dead;
 }
+
+int LinearizePos(Position pos) {
+	return pos.X * MAP_WIDTH + pos.Y;
+}
+
 Map::Map(){
 	for(int i=0; i<MAP_HEIGHT; i++){
 		for(int j=0; j<MAP_WIDTH; j++){
@@ -90,7 +98,7 @@ Map::Map(){
 	/*for (int current_length = 1; current_length <= SHIPS_MAX_LENGTH; current_length++) {
 		int ships_count = SHIPS_MAX_LENGTH - current_length + 1;
 		for (int i = 0; i < ships_count; i++) {
-			Ship new_ship(this, current_length);
+			Ship *new_ship = new Ship(this, current_length);
 			ShipsList[current_length - 1].push_back(new_ship);
 		}
 	}*/
@@ -395,4 +403,44 @@ void MapBasic::Print() {
 		cout<<endl;
 	}
 	cout << endl;
+}
+
+string MapBasic::ConvertToArray() {
+	string res;
+	res.resize(MAP_HEIGHT * MAP_WIDTH); //На случай ошибки в функции LinearizePos: в таком случае всё равно будет работать
+	for (int i = 0; i < MAP_HEIGHT; i++) {
+		for (int j = 0; j < MAP_WIDTH; j++) {
+			//res += Matrix[i][j];
+			res[LinearizePos(Position(i, j))] = Matrix[i][j];
+		}
+	}
+	return res;
+}
+
+ShootResult GetShootResultByAns(char ans) {
+	if (ans == '0') {
+		return ShootResult::SLIP;
+	}
+	if (ans == '1') {
+		return ShootResult::HURT;
+	}
+	if (ans == '2') {
+		return ShootResult::KILLED;
+	}
+
+	return ShootResult::INCORRECT;
+}
+
+string SetShootResultAns(ShootResult res) {
+	if (res == ShootResult::SLIP) {
+		return "0";
+	}
+	if (res == ShootResult::HURT) {
+		return "1";
+	}
+	if (res == ShootResult::KILLED) {
+		return "2";
+	}
+
+	return "0";
 }
