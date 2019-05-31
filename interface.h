@@ -37,6 +37,7 @@ public:
 	bool ActiveMode();
 	bool PassiveMode();
 	ShootResult DrawResult(std::string ans);
+	void PrintMaps();
 };
 
 #endif

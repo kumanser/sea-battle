@@ -22,6 +22,7 @@ Ship::Ship(Map *battlefield, int length){
 	Battlefield = battlefield;
 	Length = length;
 	IsInit = false;
+	Damage = 0;
 }
 
 bool Ship::Init(Position pos, Orientation orient){
@@ -71,7 +72,9 @@ void Ship::DrawCircuit() {
 }
 bool Ship::Harm(){
 	Damage++;
+	cout << "Damage = " << Damage << endl;
 	bool is_dead = IsDead();
+	cout << "IsDead = " << (is_dead ? "true" : "false") << endl;
 	if (is_dead) {
 		DrawCircuit();
 	}
@@ -95,7 +98,7 @@ Map::Map(){
 	/*for (int current_length = 1; current_length <= SHIPS_MAX_LENGTH; current_length++) {
 		int ships_count = SHIPS_MAX_LENGTH - current_length + 1;
 		for (int i = 0; i < ships_count; i++) {
-			Ship new_ship(this, current_length);
+			Ship *new_ship = new Ship(this, current_length);
 			ShipsList[current_length - 1].push_back(new_ship);
 		}
 	}*/
