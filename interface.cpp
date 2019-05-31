@@ -220,7 +220,8 @@ bool Interface::ActiveMode() {
 	}
 	cout << "=======================================" << endl;
 	cout << "Active sync..." << endl;
-	Network.Sync();
+	//Network.Sync();
+	Network.SendMessage(MSG_CONFIRM);
 	cout << "Active end" << endl;
 
 	return true;
@@ -286,7 +287,8 @@ bool Interface::PassiveMode() {
 	}
 	cout << "+++++++++++++++++++++++++++++++++" << endl;
 	cout << "Passive sync..." << endl;
-	Network.Sync();
+	//Network.Sync();
+	Network.ReceiveMessage(MSG_CONFIRM.size());
 	cout << "Passive end" << endl;
 	return true;
 }
