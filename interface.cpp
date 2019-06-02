@@ -70,17 +70,24 @@ bool Interface::InitConnection() {
 	while (true) {
 		string port;
 		string host;
-
 		if (Network.GetMode() == DeviceMode::CLIENT) {
 			cout << "Укажите адрес сервера [стандартное значение `localhost`]" << endl;
 			PrintCmdPrefix();
 			getline(cin,host);
 			Network.SetHost(host);
-		}
+			if (host != "localhost"){
+				cout << "Адрес сервера указан неверно" << endl;
+				continue;
+			}
+		}	
 		cout << "Укажите порт [стандартное значение `4040`]" << endl;
 		PrintCmdPrefix();
 		getline(cin,port);
 		Network.SetPort(port);
+		if (port != "4040"){
+			cout << "Порт указан неверно" << endl;
+			continue;
+		}
 
 		if (Network.Connect()) {
 			//cout << "Успешно" << endl;
@@ -106,6 +113,7 @@ bool Interface::InitConnection() {
 
 bool Interface::InitProcess() {
 	cout << "Установите корабли на поле, воспользовавшись командой set или set random" << endl;
+	cout << "Чтобы начать игру, введите start" << endl;
 	cout << "Более подробное описание данных команд можно найти в справке, введя 'help'" << endl;
 	ParserStepResult res;
 	bool first = true;
@@ -215,7 +223,12 @@ bool Interface::ActiveMode() {
 				continue;
 			}
 			if (res == ShootResult::HURT) {
+				CurrRadius = SHOOT_RADIUS_DEFAULT;
 				continue;
+			}
+			if (res == ShootResult::FINISHED) {
+				cout << "Вы победили! Игра окончена, сессия автоматом!" << endl;
+				return false;
 			}
 
 			break;
@@ -243,7 +256,14 @@ bool Interface::PassiveMode() {
 		string gotCmd = Network.ReceiveMessage(MSG_GAMEPLAY_REQ_LEN);
 		cout << "RECEIVED MESSAGE: " << gotCmd <<endl;
 		cout << "Received successful" << endl;
-
+		if (gotCmd == MSG_EXIT){
+			ParserStepResult res;
+			res = ParseCommandGameplay(MapMe, MapEnemy, gotCmd, CurrRadius);
+			cout << "Другой игрок вышел из игры. До свидания :)" << endl;
+			res.GlobalContinue = false;
+			res.LocalContinue = false;
+			return false;
+		}
 		string posStr = GetParameter(gotCmd, 0);
 		string radiusStr = GetParameter(gotCmd, 1);
 		cout << "POS: " << posStr << endl;
@@ -265,8 +285,14 @@ bool Interface::PassiveMode() {
 		if (res != ShootResult::INCORRECT) {
 			cout << "PASSIVE Send" << endl;
 			Network.SendMessage(sendMsg);
+			PrintMaps();
 			//string Guy = Network.ReceiveMessage(MSG_GAMEPLAY_REQ_LEN);
 			//cout << "IGNOR PASSIV KOSTYL Receive: govno = " << Guy <<endl;
+		}
+
+		if (res == ShootResult::FINISHED) {
+			cout << "Вы проиграли, лалка! Игра окончена" << endl;
+			return false;
 		}
 		
 		//cout << "PNT2" << endl;
@@ -279,7 +305,7 @@ bool Interface::PassiveMode() {
 	}
 	cout << "+++++++++++++++++++++++++++++++++" << endl;
 	cout << "Passive sync..." << endl;
-	//Network.Sync();
+	Network.Sync();
 	Network.ReceiveMessage(MSG_CONFIRM.size());
 	cout << "Passive end" << endl;
 	return true;

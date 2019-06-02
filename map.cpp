@@ -89,6 +89,7 @@ Map::Map(){
 	for(int i=0; i<MAP_HEIGHT; i++){
 		for(int j=0; j<MAP_WIDTH; j++){
 			Matrix[i][j].Sign=MAP_ELEMENT_EMPTY;
+			Matrix[i][j].Battleship = NULL;
 		}
 	}
 	//Строчки ниже для тестирования. Потом удалить
@@ -220,6 +221,10 @@ ShootResult Map::Shoot(Position pos, int radius) {
 			res = GetMaxShootResult(res, Shoot(curr_pos));
 			//A[i][j] = SYMBOL;
 		}
+	}
+
+	if (IsAllShipsDead()) {
+		res = ShootResult::FINISHED;
 	}
 
 	return res;
@@ -427,6 +432,9 @@ ShootResult GetShootResultByAns(char ans) {
 	if (ans == '2') {
 		return ShootResult::KILLED;
 	}
+	if (ans == '3') {
+		return ShootResult::FINISHED;
+	}
 
 	return ShootResult::INCORRECT;
 }
@@ -440,6 +448,9 @@ string SetShootResultAns(ShootResult res) {
 	}
 	if (res == ShootResult::KILLED) {
 		return "2";
+	}
+	if (res == ShootResult::FINISHED) {
+		return "3";
 	}
 
 	return "0";

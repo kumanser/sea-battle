@@ -305,7 +305,7 @@ ParserStepResult ParseCommandGameplay(Map &map_me, MapBasic &map_enemy, std::str
 		return res;
 	}
 
-	if (cmd_name == "exit"|| cmd_name.size() == 0) {
+	if (cmd_name == "exit" || cmd_name.size() == 0) {
 		cout << "До свидания! :)" << endl;
 		res.GlobalContinue = false;
 		res.LocalContinue = false;

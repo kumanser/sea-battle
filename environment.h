@@ -12,7 +12,7 @@ const char MAP_ELEMENT_SLIP='o';
 const char MAP_ELEMENT_UNHARMED='#';
 const int SHIPS_MAX_LENGTH = 4;
 const std::string MSG_CONFIRM = "m_cnf";
-const std::string MSG_EXIT = "m_ext";
+const std::string MSG_EXIT = "exitf";
 
 const int MSG_GAMEPLAY_REQ_LEN = 5;
 const int MSG_GAMEPLAY_ANS_LEN = MAP_WIDTH * MAP_HEIGHT + 2;

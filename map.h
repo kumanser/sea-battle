@@ -10,7 +10,8 @@ enum ShootResult {
 	INCORRECT,
 	SLIP,
 	HURT,
-	KILLED
+	KILLED,
+	FINISHED
 };
 
 ShootResult GetMaxShootResult(ShootResult a, ShootResult b);
