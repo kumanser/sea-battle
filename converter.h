@@ -17,6 +17,4 @@ unsigned int CharToUNum(char sym);
 unsigned int StringToUNum(std::string str);
 unsigned int NumLength(int num);
 
-//unsigned int GetElementCountByRadius(unsigned int radius);
-
 #endif // CONVERTER_H

@@ -67,7 +67,6 @@ public:
 	bool RemoveShip(Position pos);
 	void RandomFill();
 	bool IsAllShipsDead();
-	//void GetCharMap(char **char_map);
 	MapField GetMapElement(int i, int j);
 	MapField GetMapElement(Position pos);
 

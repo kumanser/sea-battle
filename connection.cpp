@@ -104,20 +104,13 @@ string Connection::ReceiveMessage(unsigned int length) {
 	char *tmp_arr = new char[length];
 	//cout << "PNT1" << endl;
 	memcpy(tmp_arr, zmq_msg_data(&zmq_message), length);
-	//string res(tmp_arr);
-	//cout << "PNT2" << endl;
 	string res = "";
 	for (int i = 0; i < length; i++) {
 		res += tmp_arr[i];
 	}
-	//cout << "PNT3" << endl;
-	cout << "len = " << length << endl;
-	cout << "msg = " << res << endl;
-	//cout << "PNT4" << endl;
 	delete [] tmp_arr;
 	//cout << "PNT5" << endl;
 	zmq_msg_close(&zmq_message);
-	cout << res << endl;
 
 	return res;
 
@@ -129,16 +122,13 @@ bool Connection::Sync() {
 		if (msg == MSG_EXIT) {
 			return false;
 		}
-		//cout << "out = " << test << endl;
 		SendMessage(MSG_CONFIRM);
 	} else if (GetMode() == DeviceMode::CLIENT) {
 		SendMessage(MSG_CONFIRM);
-		//cout << "MSG_SENDED" << endl;
 		string msg = ReceiveMessage(MSG_CONFIRM.size());
 		if (msg == MSG_EXIT) {
 			return false;
 		}
-		//cout << "out = " << test << endl;
 	}
 	return true;
 }

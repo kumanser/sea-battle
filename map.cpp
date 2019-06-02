@@ -72,9 +72,9 @@ void Ship::DrawCircuit() {
 }
 bool Ship::Harm(){
 	Damage++;
-	cout << "Damage = " << Damage << endl;
+	//cout << "Damage = " << Damage << endl;
 	bool is_dead = IsDead();
-	cout << "IsDead = " << (is_dead ? "true" : "false") << endl;
+	//cout << "IsDead = " << (is_dead ? "true" : "false") << endl;
 	if (is_dead) {
 		DrawCircuit();
 	}
@@ -92,25 +92,14 @@ Map::Map(){
 			Matrix[i][j].Battleship = NULL;
 		}
 	}
-	//Строчки ниже для тестирования. Потом удалить
-	//Matrix[0][1] = MAP_ELEMENT_UNHARMED;
-	//Matrix[1][1] = MAP_ELEMENT_UNHARMED;
-
-	/*for (int current_length = 1; current_length <= SHIPS_MAX_LENGTH; current_length++) {
-		int ships_count = SHIPS_MAX_LENGTH - current_length + 1;
-		for (int i = 0; i < ships_count; i++) {
-			Ship *new_ship = new Ship(this, current_length);
-			ShipsList[current_length - 1].push_back(new_ship);
-		}
-	}*/
-	//Ship ship(this, 4);
-	//ship.Init(Position(1, 1), Orientation::HORISONTAL);
-
 }
 void Map::ClearShipsList() {
 	for (int current_length = 1; current_length <= SHIPS_MAX_LENGTH; current_length++) {
 		for (int i = 0; i < ShipsList[current_length - 1].size(); i++) {
-			delete ShipsList[current_length - 1][i];
+			if (ShipsList[current_length - 1][i] != NULL) {
+				delete ShipsList[current_length - 1][i];
+				ShipsList[current_length - 1][i] = NULL;
+			}
 		}
 		ShipsList[current_length - 1].clear();
 	}
@@ -196,7 +185,6 @@ ShootResult Map::Shoot(Position pos){
 	} else if (Matrix[pos.Y][pos.X].Sign==MAP_ELEMENT_EMPTY) {
 		Matrix[pos.Y][pos.X].Sign=MAP_ELEMENT_SLIP;
 		
-		//cout << " ::FALSE";
 	}
 	return ShootResult::SLIP;
 }

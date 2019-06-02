@@ -8,18 +8,9 @@
 #include "connection.h"
 #include <vector>
 
-/*enum InterfaceStatus {
-	CONNECT,
-	INIT,
-	GAMEPLAY
-};*/
-
-
 class Interface {
-	//InterfaceStatus Status;
 	Connection Network;
 	Map MapMe;
-	//char MapEnemy[MAP_HEIGHT][MAP_WIDTH];
 	MapBasic MapEnemy;
 	InitElements InitData;
 	int CurrRadius;

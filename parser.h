@@ -20,6 +20,7 @@ class InitElements {
 	int ShipsNotUsed[SHIPS_MAX_LENGTH];
 
 public:
+	InitElements();
 	void SetDefault();
 	void UseAllShips();
 	bool UseShip(int length);

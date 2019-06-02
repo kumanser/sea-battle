@@ -114,16 +114,3 @@ unsigned int NumLength(int num) {
 	return cnt;
 }
 
-/*unsigned int GetElementCountByRadius(unsigned int radius) {
-	unsigned int size = 2 * radius + 1;
-	unsigned int sum = 0;
-	for (unsigned int i = 1; i <= size; i += 2) {
-		if (i != size) {
-			sum += 2 * i;
-		} else {
-			sum += i;
-		}
-	}
-	return sum;
-}*/
-

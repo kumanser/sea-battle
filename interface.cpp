@@ -11,8 +11,10 @@
 using namespace std;
 
 Interface::Interface() {
+	//cout << "INTERFACE CONSTRUCTOR" << endl;
 	CurrRadius = 0;
 	FirstClientRecv = false;
+	InitData.SetDefault();
 }
 
 void Interface::Start() {
@@ -32,7 +34,10 @@ void Interface::PrintCmdPrefix() {
 }
 
 void Interface::PrintMaps() {
+	cout << "================================" << endl;
+	cout << "Моё поле" << endl;
 	MapMe.PrintForMe();
+	cout << "Поле соперника" << endl;
 	MapEnemy.Print();
 }
 
@@ -96,15 +101,6 @@ bool Interface::InitConnection() {
 		cout << "Ошибка подключения. Попробуйте ещё раз" << endl;
 	}
 
-	/*if (Network.GetMode() == DeviceMode::SERVER) {
-		string test = Network.ReceiveMessage(19);
-		cout << test << endl;
-		Network.SendMessage("Success from server");
-	} else if (Network.GetMode() == DeviceMode::CLIENT) {
-		Network.SendMessage("Success from client");
-		string test = Network.ReceiveMessage(19);
-		cout << test << endl;
-	}*/
 	cout << "Подключение к другому игроку... Ожидайте..." << endl;
 	Network.Sync();
 
@@ -146,33 +142,6 @@ bool Interface::InitProcess() {
 	return res.GlobalContinue;
 }
 
-/*void Interface::DrawResult(Position pos, string str) {
-	int size = 2 * CurrRadius + 1;
-	Position origin(pos.X - CurrRadius, pos.Y - CurrRadius);
-	int cnt = 0;
-	//ShootResult res = ShootResult::INCORRECT;
-	for(int i=0; i<size; i++){
-		int start;
-		int end;
-		if (i<size/2){
-			start = radius - i;
-			end = radius + i;
-		} else {
-			start = i - radius;
-			end = 3*radius - i;
-		}
-		for(int j=start; j<=end; j++){
-			Position curr_pos(origin.X + i, origin.Y + j);
-			if (MapMe.IsPosCorrect(curr_pos)) {
-				MapEnemy.Matrix[curr_pos.X, curr_pos.Y] = str[cnt];
-			}
-			cnt++;
-			//res = GetMaxShootResult(res, Shoot(curr_pos));
-			//A[i][j] = SYMBOL;
-		}
-	}
-}*/
-
 ShootResult Interface::DrawResult(string ans) {
 	string res = GetParameter(ans, 0);
 	string map = GetParameter(ans, 1);
@@ -188,7 +157,6 @@ ShootResult Interface::DrawResult(string ans) {
 
 bool Interface::ActiveMode() {
 	while (true) {
-		cout << "ACTIVE STEP" << endl;
 		string cmd;
 		PrintCmdPrefix();
 		getline(cin, cmd);
@@ -197,23 +165,14 @@ bool Interface::ActiveMode() {
 
 		if (GetParameter(cmd, 0) == "shoot") {
 			string posStr = GetParameter(cmd, 1);
-			//string sendCmd = posStr + " " + UNumToString(CurrRadius);
 			string sendCmd = posStr + " ";
-			cout << "NumLength = " << NumLength(CurrRadius) << endl;
 			while (sendCmd.size() < MSG_GAMEPLAY_REQ_LEN - NumLength(CurrRadius)) {
 				sendCmd += "0";
 			}
 			sendCmd += UNumToString(CurrRadius);
-			cout << "SendCmd: " << sendCmd << endl;
-
-			//Network.Sync();
-			//cout << "ACTIVE SEND" << endl;
+			
 			Network.SendMessage(sendCmd);
-			//cout << "SENDED MESSAGE: " <<sendCmd<<endl;
-			cout << "ACTIVE Receive..." << endl;
 			string ans = Network.ReceiveMessage(MSG_GAMEPLAY_ANS_LEN);
-			cout << "Received successful" << endl;
-
 
 			ShootResult res = DrawResult(ans);
 			PrintMaps();
@@ -241,21 +200,14 @@ bool Interface::ActiveMode() {
 			}
 		}
 	}
-	cout << "=======================================" << endl;
-	cout << "Active sync..." << endl;
-	//Network.Sync();
 	Network.SendMessage(MSG_CONFIRM);
-	cout << "Active end" << endl;
 
 	return true;
 }
 
 bool Interface::PassiveMode() {
 	while (true) {
-		cout << "PASSIVE STEP" << endl;
 		string gotCmd = Network.ReceiveMessage(MSG_GAMEPLAY_REQ_LEN);
-		cout << "RECEIVED MESSAGE: " << gotCmd <<endl;
-		cout << "Received successful" << endl;
 		if (gotCmd == MSG_EXIT){
 			ParserStepResult res;
 			res = ParseCommandGameplay(MapMe, MapEnemy, gotCmd, CurrRadius);
@@ -266,11 +218,9 @@ bool Interface::PassiveMode() {
 		}
 		string posStr = GetParameter(gotCmd, 0);
 		string radiusStr = GetParameter(gotCmd, 1);
-		cout << "POS: " << posStr << endl;
 
 		Position pos = CoordinateParse(posStr);
 		unsigned int radius = StringToUNum(radiusStr);
-		cout << "RADIUS: " << radius << endl;
 		ShootResult res = MapMe.Shoot(pos, radius);
 		string sendRes = SetShootResultAns(res);
 		MapBasic sendMap;
@@ -278,16 +228,9 @@ bool Interface::PassiveMode() {
 		string sendMapStr = sendMap.ConvertToArray();
 		string sendMsg = sendRes + " " + sendMapStr;
 
-		// cout << "SendMsg:" << endl << sendMsg << endl;
-		// cout << "SendRes = " << sendRes << endl;
-		// cout << "SendMsg Len = " << sendMsg.size() << endl;
-
 		if (res != ShootResult::INCORRECT) {
-			cout << "PASSIVE Send" << endl;
 			Network.SendMessage(sendMsg);
 			PrintMaps();
-			//string Guy = Network.ReceiveMessage(MSG_GAMEPLAY_REQ_LEN);
-			//cout << "IGNOR PASSIV KOSTYL Receive: govno = " << Guy <<endl;
 		}
 
 		if (res == ShootResult::FINISHED) {
@@ -295,29 +238,19 @@ bool Interface::PassiveMode() {
 			return false;
 		}
 		
-		//cout << "PNT2" << endl;
 
-		cout << "PASSIVE STEP END" << endl;
 		if (res == ShootResult::SLIP/* || res == ShootResult::INCORRECT*/) {
-			cout << "PASSIVE BREAK" << endl;
 			break;
 		}
 	}
-	cout << "+++++++++++++++++++++++++++++++++" << endl;
-	cout << "Passive sync..." << endl;
 	Network.Sync();
 	Network.ReceiveMessage(MSG_CONFIRM.size());
-	cout << "Passive end" << endl;
 	return true;
 }
 
 bool Interface::GameplayProcess() {
 	ParserStepResult res;
 	while (res.LocalContinue) {
-		/*string cmd;
-		PrintCmdPrefix();
-		getline(cin, cmd);
-		res = ParseCommandGameplay(MapMe, MapEnemy, cmd, CurrRadius);*/
 		if (Network.GetMode() == DeviceMode::CLIENT) {
 			if (!ActiveMode()) {
 				break;

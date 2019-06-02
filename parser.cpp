@@ -14,9 +14,14 @@ ParserStepResult::ParserStepResult() {
 	LocalContinue = true;
 }
 
+InitElements::InitElements() {
+	SetDefault();
+}
+
 void InitElements::SetDefault() {
 	for(int i=0; i<SHIPS_MAX_LENGTH; i++){
 		ShipsNotUsed[i]=SHIPS_MAX_LENGTH-i;
+		cout << i << ": " << ShipsNotUsed[i] << endl;
 	}
 }
 void InitElements::UseAllShips() {
@@ -26,6 +31,12 @@ void InitElements::UseAllShips() {
 }
 
 bool InitElements::UseShip(int length) {
+	// cout << "length = " << length << endl;
+	// cout << ShipsNotUsed[0] << endl;
+	// cout << ShipsNotUsed[1] << endl;
+	// cout << ShipsNotUsed[2] << endl;
+	// cout << ShipsNotUsed[3] << endl;
+	// cout << "~~~~~~" << endl;
 	if(ShipsNotUsed[length-1] > 0){
 		ShipsNotUsed[length-1] --;
 		return true; 
@@ -149,7 +160,7 @@ bool ParseCmdSet(Map &map, string cmd, InitElements &init_data) {
 		init_data.UseAllShips();
 		return true;
 	} 
-	if (GetParameter(cmd, 1) <= "0" || GetParameter(cmd, 1) > "4") {
+	if (StringToUNum(GetParameter(cmd, 1)) <= 0 || StringToUNum(GetParameter(cmd, 1)) > 4) {
 		return false;
 	} 
 	int length = StringToUNum(GetParameter(cmd, 1));
@@ -245,29 +256,10 @@ ParserStepResult ParseCommandShipInit(Map &map, string cmd, InitElements &init_d
 			cout << "Некоторые корабли не установлены" << endl;
 			return res;
 		}
-		//cout << "Начинаем..." << endl;
 		res.LocalContinue = false;
 		return res;
 	}
 
-
-
-	/*switch (cmd_name) {
-		case("help"):
-			PrintHelp();
-			break;
-		case "set":
-			ParseCmdSet(map, cmd);
-			break;
-		case "delete":
-			ParseCmdDelete(map, cmd);
-			break;
-		case "clear":
-			map->Clear();
-			break;
-		case "exit":
-			return false;
-	}*/
 	cout << STUPID_USER << endl;
 	return res;
 }
@@ -291,12 +283,12 @@ ParserStepResult ParseCommandGameplay(Map &map_me, MapBasic &map_enemy, std::str
 		Position pos = CoordinateParse(pos_str);
 
 		res.ShootStatus = map_me.Shoot(pos, radius);
-		map_enemy.Import(map_me); //Временное решение
+		map_enemy.Import(map_me); 
 
 		map_me.PrintForMe();
 		map_enemy.Print();
 
-		bool is_enemy_dead = map_me.IsAllShipsDead(); //Временное решение - будет передаваться в межпроцессорном сообщении
+		bool is_enemy_dead = map_me.IsAllShipsDead(); 
 
 		if (is_enemy_dead) {
 			cout << "Враг уничтожен. Игра окончена" << endl;
