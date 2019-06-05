@@ -237,13 +237,12 @@ bool Interface::PassiveMode() {
 			cout << "Вы проиграли, лалка! Игра окончена" << endl;
 			return false;
 		}
-		
 
 		if (res == ShootResult::SLIP/* || res == ShootResult::INCORRECT*/) {
 			break;
 		}
 	}
-	Network.Sync();
+
 	Network.ReceiveMessage(MSG_CONFIRM.size());
 	return true;
 }
