@@ -1,36 +1,36 @@
 # sea-battle
-## Сборка:
+## Build:
 
 ```bash
 make
 ```
 
-## Запуск:
+## Launch:
 
 ```bash
 ./sea-battle
 ```
 
-## Инициализация кораблей:
+## Ships initializing:
 ```
-start — начать игру                                                       
-set <length (3)> <position (A2)> <orientation (v/h)> — поместить корабль на поле
-Пример: set 3 A2 v                                                          
-set random — случайная расстановка кораблей                                     
-delete <position (A2)> — удаление корабля, расположенного на данной клетке     
-Пример: delete A2                                                        
-clear — очистить поле                                                           
-show — показать поле                                                            
-help — показать справку                                                         
-exit — выйти
+start — start the game                                                      
+set <length (3)> <position (A2)> <orientation (v/h)> — put the ship on the field
+Example: set 3 A2 v                                                          
+set random — random ships set                                   
+delete <position (A2)> — delete the ship on the current position   
+Example: delete A2                                                        
+clear — clear the field                                                         
+show — show the field                                                          
+help — show help                                                       
+exit — exit the game
 ```
 
-## Игровой процесс
+## Game process
 ```
-shoot <position (A2)> — произвести выстрел по заданной координате               
-Пример: shoot A2                                                            
-show — показать поле                                                           
-help — показать справку                                                         
-exit — выйти
+shoot <position (A2)> — shoot the specified coordinates              
+Example: shoot A2                                                            
+show — show the field                                                       
+help — show help                                                    
+exit — exit the game
 ```
   
